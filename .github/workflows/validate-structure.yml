@@ -1,0 +1,122 @@
+name: Validate Structure
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate CDD Structure
+        run: |
+          echo "Validating CDD structure..."
+
+          # Check Tier 1 (.ai/)
+          if [ ! -d ".ai" ]; then
+            echo "❌ .ai/ directory missing"
+            exit 1
+          fi
+
+          if [ ! -f ".ai/README.md" ]; then
+            echo "❌ .ai/README.md missing"
+            exit 1
+          fi
+
+          echo "✅ CDD Tier 1 structure valid"
+
+          # Check Tier 2 (docs/llm/)
+          if [ ! -d "docs/llm" ]; then
+            echo "❌ docs/llm/ directory missing"
+            exit 1
+          fi
+
+          if [ ! -d "docs/llm/policies" ]; then
+            echo "❌ docs/llm/policies/ directory missing"
+            exit 1
+          fi
+
+          echo "✅ CDD Tier 2 structure valid"
+
+      - name: Validate SDD Structure
+        run: |
+          echo "Validating SDD structure..."
+
+          if [ ! -d ".specs" ]; then
+            echo "❌ .specs/ directory missing"
+            exit 1
+          fi
+
+          if [ ! -f ".specs/README.md" ]; then
+            echo "❌ .specs/README.md missing"
+            exit 1
+          fi
+
+          echo "✅ SDD structure valid"
+
+      - name: Validate AGENTS.md
+        run: |
+          echo "Validating AGENTS.md structure..."
+
+          if [ ! -f "AGENTS.md" ]; then
+            echo "❌ AGENTS.md missing"
+            exit 1
+          fi
+
+          # Check for required markers
+          if ! grep -q "BEGIN: STANDARD POLICY" AGENTS.md; then
+            echo "❌ AGENTS.md missing STANDARD POLICY marker"
+            exit 1
+          fi
+
+          if ! grep -q "END: STANDARD POLICY" AGENTS.md; then
+            echo "❌ AGENTS.md missing END marker"
+            exit 1
+          fi
+
+          # Verify CDD definition is 4-Tier
+          if ! grep -q "Tier 1.*\.ai/" AGENTS.md; then
+            echo "❌ CDD Tier 1 definition missing"
+            exit 1
+          fi
+
+          # Verify SDD definition is 3-Layer
+          if grep -q "L4.*history" AGENTS.md; then
+            echo "❌ SDD should be 3-Layer, not 4-Layer"
+            exit 1
+          fi
+
+          echo "✅ AGENTS.md structure valid"
+
+      - name: Check Line Limits
+        run: |
+          echo "Checking Tier 1 line limits (≤50 lines)..."
+
+          for file in .ai/*.md; do
+            if [ -f "$file" ]; then
+              lines=$(wc -l < "$file")
+              if [ $lines -gt 50 ]; then
+                echo "❌ $file has $lines lines (max 50)"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "✅ Tier 1 line limits valid"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Validation Summary"
+          echo "- CDD Structure: ${{ steps.validate-cdd.outcome }}"
+          echo "- SDD Structure: ${{ steps.validate-sdd.outcome }}"
+          echo "- AGENTS.md: ${{ steps.validate-agents.outcome }}"
+          echo "- Line Limits: ${{ steps.check-lines.outcome }}"
