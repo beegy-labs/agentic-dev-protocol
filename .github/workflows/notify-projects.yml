@@ -1,0 +1,26 @@
+name: Notify Projects
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'standards/**'
+      - 'policies/**'
+      - 'AGENTS.md'
+      - 'templates/**'
+  workflow_dispatch:
+
+jobs:
+  notify:
+    name: Notify Dependent Projects
+    runs-on: [self-hosted, kubernetes, gitops]
+
+    steps:
+      - name: Trigger my-girok sync
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/beegy-labs/my-girok/dispatches \
+            -f event_type=llm-dev-protocol-update \
+            -f client_payload='{"ref":"${{ github.sha }}","source":"llm-dev-protocol"}'
