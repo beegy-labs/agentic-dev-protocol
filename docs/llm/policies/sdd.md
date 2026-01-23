@@ -226,6 +226,7 @@ Examples:
 ```
 
 **Why descriptive names?**
+
 - Quick identification of what was done without opening the file
 - Easy to search and reference later
 - Clear timeline of project evolution
@@ -355,10 +356,10 @@ Brief description of what was accomplished in this scope.
 
 ## Deliverables
 
-| Deliverable | Path | Status |
-| ----------- | ---- | ------ |
-| service-a   | `services/service-a/` | ✅ |
-| proto       | `packages/proto/...` | ✅ |
+| Deliverable | Path                  | Status |
+| ----------- | --------------------- | ------ |
+| service-a   | `services/service-a/` | ✅     |
+| proto       | `packages/proto/...`  | ✅     |
 
 ## Key Decisions
 
@@ -367,9 +368,9 @@ Brief description of what was accomplished in this scope.
 
 ## CDD Updates
 
-| File | Action |
-| ---- | ------ |
-| `.ai/services/xxx.md` | Created |
+| File                     | Action  |
+| ------------------------ | ------- |
+| `.ai/services/xxx.md`    | Created |
 | `docs/llm/guides/yyy.md` | Updated |
 
 ## Lessons Learned
