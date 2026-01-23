@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "projects": [
+    {
+      "name": "my-girok",
+      "description": "Personal information management - Reference implementation",
+      "repository": "https://github.com/beegy-labs/my-girok.git",
+      "sync": {
+        "enabled": true,
+        "targets": [
+          "AGENTS.md",
+          "docs/llm/policies/cdd.md",
+          "docs/llm/policies/sdd.md",
+          "docs/llm/policies/add.md"
+        ],
+        "strategy": "marker-based",
+        "auto_pr": true
+      },
+      "status": "active",
+      "validation": {
+        "cdd": true,
+        "sdd": true,
+        "add": "manual"
+      }
+    }
+  ],
+  "sync_config": {
+    "branch_prefix": "sync/llm-dev-protocol",
+    "commit_author": {
+      "name": "LLM Dev Protocol Bot",
+      "email": "bot@llm-dev-protocol.dev"
+    },
+    "pr_labels": ["automated", "sync", "llm-dev-protocol"],
+    "reviewers": []
+  }
+}
