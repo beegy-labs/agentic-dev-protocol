@@ -1,143 +1,177 @@
-# LLM Development Protocol
+# Agentic Development Protocol
 
-Central repository for LLM-based development methodology (CDD, SDD, ADD) policies and documentation generation scripts.
+Central repository for LLM-based development methodology (CDD, SDD, ADD) policies.
 
-## Quick Start
+## Overview
 
-Use [vibe-coding-starter](https://github.com/beegy-labs/vibe-coding-starter) for a ready-to-use monorepo template with CDD, SDD, ADD pre-configured.
+This repository is the **Single Source of Truth** for development policies across all monorepos.
+
+```
+agentic-dev-protocol (this repo)
+        │
+        │ Git Submodule + Renovate (Auto-merge)
+        ▼
+┌───────────────────┬───────────────────┐
+│  vibe-coding-     │     my-girok      │
+│  starter          │                   │
+│  (main)           │    (develop)      │
+└───────────────────┴───────────────────┘
+```
 
 ## Core Methodology
 
 | Policy | Purpose | File |
 |--------|---------|------|
 | **CDD** | Context-Driven Development - 4-tier document architecture | `docs/llm/policies/cdd.md` |
-| **SDD** | Spec-Driven Development - WHAT→WHEN→HOW structure | `docs/llm/policies/sdd.md` |
-| **ADD** | Agent-Driven Development - Multi-agent autonomous execution | `docs/llm/policies/add.md` |
+| **SDD** | Spec-Driven Development - Human explains, LLM documents | `docs/llm/policies/sdd.md` |
+| **ADD** | Agent-Driven Development - Autonomous execution | `docs/llm/policies/add.md` |
+
+## How It Works
+
+### Auto-Update Flow
+
+```
+1. Developer modifies agentic-dev-protocol
+   └── git push origin main
+
+2. Renovate detects submodule change (within minutes)
+   └── Creates update commit in target repos
+
+3. Target repos auto-merge
+   └── my-girok (develop), vibe-coding-starter (main)
+
+4. Done - All projects have latest policies
+```
+
+### Protection Mechanism
+
+| Layer | Protection |
+|-------|------------|
+| Submodule | Separate repo, can't modify directly |
+| Symlink | Points to submodule, read-only |
+| Renovate | Auto-overwrites on any change |
+
+## Setup for New Projects
+
+### 1. Add Submodule
+
+```bash
+# Add agentic-dev-protocol as submodule
+git submodule add https://github.com/beegy-labs/agentic-dev-protocol vendor/agentic-dev-protocol
+
+# Create symlinks
+mkdir -p docs
+ln -s ../vendor/agentic-dev-protocol/docs/llm docs/llm
+ln -s ../vendor/agentic-dev-protocol/docs/en docs/en
+
+git add .
+git commit -m "chore: Add agentic-dev-protocol as submodule"
+```
+
+### 2. Add Renovate Config
+
+Create `renovate.json`:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "git-submodules": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["git-submodules"],
+      "matchPackageNames": ["agentic-dev-protocol"],
+      "automerge": true,
+      "automergeType": "branch",
+      "schedule": ["at any time"],
+      "commitMessagePrefix": "chore(policy):",
+      "commitMessageTopic": "agentic-dev-protocol"
+    }
+  ]
+}
+```
+
+### 3. Install Renovate GitHub App
+
+Install from: https://github.com/apps/renovate
 
 ## Repository Structure
 
 ```
-llm-dev-protocol/
-├── .ai/README.md                         # CDD Tier 1 indicator
-├── docs/llm/policies/                    # Policy files (6)
-│   ├── cdd.md                            # Context-Driven Development
-│   ├── sdd.md                            # Spec-Driven Development
-│   ├── add.md                            # Agent-Driven Development
-│   ├── development-methodology.md        # Core philosophy
-│   ├── development-methodology-details.md
-│   └── agents-customization.md           # AGENTS.md customization
-└── scripts/docs/                         # Documentation scripts
-    ├── generate.ts                       # Tier 2 → Tier 3
-    ├── translate.ts                      # Tier 3 → Tier 4
-    ├── utils.ts
-    ├── tsconfig.json
-    ├── providers/                        # LLM providers
-    │   ├── ollama.ts                     # Local LLM
-    │   ├── gemini.ts                     # Google Gemini
-    │   ├── claude.ts                     # Anthropic Claude
-    │   └── openai.ts                     # OpenAI
-    └── prompts/
-        ├── generate.txt
-        └── translate.txt
+agentic-dev-protocol/
+├── docs/
+│   ├── llm/                    # Tier 2: LLM-optimized (SSOT)
+│   │   └── policies/
+│   │       ├── cdd.md
+│   │       ├── sdd.md
+│   │       ├── add.md
+│   │       └── ...
+│   └── en/                     # Tier 3: Human-readable
+│       ├── README.md
+│       ├── cdd.md
+│       ├── sdd.md
+│       └── add.md
+├── vendor/                     # External dependencies (future)
+└── renovate.json
 ```
 
-## Usage
+## Target Repo Structure
 
-### 1. Setup Sync in Your Project
-
-Create `scripts/sync-protocol.sh`:
-
-```bash
-#!/bin/bash
-set -e
-
-PROTOCOL_REPO="https://github.com/beegy-labs/llm-dev-protocol.git"
-TEMP_DIR=$(mktemp -d)
-trap "rm -rf ${TEMP_DIR}" EXIT
-
-git clone --depth 1 --quiet "${PROTOCOL_REPO}" "${TEMP_DIR}/src"
-
-# Sync policies
-mkdir -p docs/llm/policies
-for f in cdd.md sdd.md add.md development-methodology.md development-methodology-details.md agents-customization.md; do
-  cp "${TEMP_DIR}/src/docs/llm/policies/${f}" "docs/llm/policies/${f}"
-done
-
-# Sync scripts
-mkdir -p scripts/docs/providers scripts/docs/prompts
-cp ${TEMP_DIR}/src/scripts/docs/*.ts scripts/docs/
-cp ${TEMP_DIR}/src/scripts/docs/tsconfig.json scripts/docs/
-cp ${TEMP_DIR}/src/scripts/docs/providers/*.ts scripts/docs/providers/
-cp ${TEMP_DIR}/src/scripts/docs/prompts/*.txt scripts/docs/prompts/
-
-echo "✅ Sync complete"
 ```
-
-Add to `package.json`:
-
-```json
-{
-  "scripts": {
-    "sync:protocol": "scripts/sync-protocol.sh"
-  }
-}
-```
-
-### 2. Run Sync
-
-```bash
-pnpm sync:protocol
-```
-
-### 3. Generate Documentation (CDD Tier 3/4)
-
-```bash
-# Tier 2 → Tier 3 (SSOT → Human-readable)
-pnpm docs:generate --provider ollama
-pnpm docs:generate --provider gemini
-pnpm docs:generate --provider claude
-pnpm docs:generate --provider openai
-
-# Tier 3 → Tier 4 (English → Translation)
-pnpm docs:translate --locale kr --provider gemini
+my-girok/
+├── vendor/
+│   └── agentic-dev-protocol/       # [Submodule] Read-only
+├── docs/
+│   ├── llm -> ../vendor/.../llm    # [Symlink]
+│   ├── en -> ../vendor/.../en      # [Symlink]
+│   └── project/                    # Project-specific docs
+├── .ai/                            # Project-specific context
+├── .specs/                         # Project-specific specs
+└── renovate.json                   # Auto-merge config
 ```
 
 ## CDD 4-Tier Structure
 
 ```
-Tier 1: .ai/README.md          ← Entry point (≤50 lines)
-Tier 2: docs/llm/**/*.md       ← SSOT (LLM optimized)
-Tier 3: docs/en/**/*.md        ← Human-readable (generated)
-Tier 4: docs/{locale}/**/*.md  ← Translations (generated)
+Tier 1: .ai/              ← Entry point (≤50 lines, ASCII only)
+Tier 2: docs/llm/         ← SSOT (≤300 lines, ASCII only)
+Tier 3: docs/en/          ← Human-readable (Unicode OK)
+Tier 4: docs/{locale}/    ← Translations (Unicode OK)
 ```
 
 ## SDD 3-Layer Structure
 
 ```
-.specs/apps/{app}/
-├── roadmap.md           # L1: WHAT - Overall direction
-├── scopes/{scope}.md    # L2: WHEN - Work scope
-└── tasks/{scope}.md     # L3: HOW - Implementation plan
+.specs/{app}/
+├── roadmap.md           # L1: Big picture
+├── scopes/{id}.md       # L2: Scope details
+└── tasks/{scope}/       # L3: Task breakdown
+    ├── index.md
+    └── 01-task.md
 ```
 
-## Sync Policy
+## Manual Update (if needed)
 
-| Directory | Sync | Reason |
-|-----------|------|--------|
-| `docs/llm/policies/` | ✅ | Common policies |
-| `scripts/docs/` | ✅ | Doc generation scripts |
-| `.ai/` | ❌ | Project-specific customization |
-| `.specs/` | ❌ | Project-specific specs |
-
-## Related
-
-- [vibe-coding-starter](https://github.com/beegy-labs/vibe-coding-starter) - Monorepo template with CDD, SDD, ADD
+```bash
+# Update submodule to latest
+git submodule update --remote vendor/agentic-dev-protocol
+git add vendor/agentic-dev-protocol
+git commit -m "chore: Update agentic-dev-protocol"
+git push
+```
 
 ## Contributing
 
-1. Modify policies/scripts in this repository
+1. Modify policies in this repository
 2. Push to main branch
-3. Run `pnpm sync:protocol` in each project
+3. Renovate auto-updates all target repos
+
+## Related
+
+- [vibe-coding-starter](https://github.com/beegy-labs/vibe-coding-starter) - Monorepo template
+- [my-girok](https://github.com/beegy-labs/my-girok) - Production project
 
 ## License
 
