@@ -78,7 +78,14 @@ Documents:   ~70k (target 40% utilization)
 | Tiered loading | 40-60% | High |
 | ASCII-only | 2-5% | Required |
 
-### ASCII Policy (T1/T2)
+### Character Policy
+
+| Tier | Charset | Reason |
+|------|---------|--------|
+| T1/T2 | ASCII only | Token efficiency, LLM parsing |
+| T3/T4 | Unicode OK | Human readability, emojis, Mermaid |
+
+### ASCII Mapping (T1/T2)
 
 | Original | ASCII |
 |----------|-------|
@@ -88,7 +95,7 @@ Documents:   ~70k (target 40% utilization)
 | Emojis | [!], [i] |
 
 ```bash
-# Validate
+# Validate T1/T2
 grep -rP '[^\x00-\x7F]' .ai/ docs/llm/
 ```
 
