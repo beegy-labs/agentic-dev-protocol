@@ -25,8 +25,7 @@ Thumbs.db
 *.temp
 .cache/
 
-# Generated docs (Tier 3/4)
-docs/en/
+# Generated docs (Tier 4 only - translations)
 docs/kr/
 docs/ja/
 docs/zh/
