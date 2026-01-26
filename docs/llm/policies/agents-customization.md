@@ -14,24 +14,24 @@ Each project's `AGENTS.md` consists of two parts:
 ```markdown
 # AGENTS.md
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 <!-- BEGIN: STANDARD POLICY (Auto-synced from llm-dev-protocol)         -->
 <!-- DO NOT EDIT this section manually - changes will be overwritten    -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 
 > **Multi-LLM Standard Policy** | **Version**: 1.0.0
 
 ... standard content from llm-dev-protocol ...
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 <!-- END: STANDARD POLICY                                               -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 
 ---
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 <!-- BEGIN: PROJECT CUSTOM (Safe to edit)                               -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 
 ## Project-Specific Configuration
 
@@ -85,9 +85,9 @@ Each project's `AGENTS.md` consists of two parts:
 | Security Breach | P0       | 5 minutes     | CTO + Security Team |
 | API Degradation | P1       | 15 minutes    | Engineering Lead    |
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 <!-- END: PROJECT CUSTOM                                                -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ================================================================ -->
 ```
 
 ## Markers
@@ -290,16 +290,16 @@ The validation script checks:
 ./scripts/validate-structure.sh /path/to/project
 
 # Checks:
-# ✓ STANDARD POLICY markers present
-# ✓ PROJECT CUSTOM markers present
-# ✓ Standard section matches llm-dev-protocol version
-# ✓ No edits in standard section
-# ⚠ Large custom section (>200 lines) - consider moving to docs/llm/
+# [x] STANDARD POLICY markers present
+# [x] PROJECT CUSTOM markers present
+# [x] Standard section matches llm-dev-protocol version
+# [x] No edits in standard section
+# [!] Large custom section (>200 lines) - consider moving to docs/llm/
 ```
 
 ## Anti-Patterns
 
-### ❌ Don't
+### [N] Don't
 
 ```markdown
 <!-- BEGIN: PROJECT CUSTOM -->
@@ -315,7 +315,7 @@ The validation script checks:
 
 **Solution**: Move to `docs/llm/architecture.md`, add summary table in custom section
 
-### ❌ Don't
+### [N] Don't
 
 ```markdown
 <!-- BEGIN: PROJECT CUSTOM -->
@@ -329,7 +329,7 @@ We use React. Also we have some API endpoints.
 
 **Solution**: Use tables and structured formats
 
-### ✅ Do
+### [Y] Do
 
 ```markdown
 <!-- BEGIN: PROJECT CUSTOM -->
