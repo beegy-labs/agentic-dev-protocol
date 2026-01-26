@@ -1,0 +1,52 @@
+name: Protect Synced Docs
+
+# This workflow should be copied to target repositories
+# It prevents direct modifications to docs/llm and docs/en
+# These directories are managed by agentic-dev-protocol
+
+on:
+  pull_request:
+    paths:
+      - 'docs/llm/**'
+      - 'docs/en/**'
+
+jobs:
+  check-sync-source:
+    name: Verify sync source
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is from sync branch
+        run: |
+          PR_BRANCH="${{ github.head_ref }}"
+          PR_AUTHOR="${{ github.actor }}"
+
+          echo "PR Branch: $PR_BRANCH"
+          echo "PR Author: $PR_AUTHOR"
+
+          # Allow sync branches from agentic-dev-protocol
+          if [[ "$PR_BRANCH" == sync/agentic-dev-protocol* ]]; then
+            echo "✅ This is a sync PR from agentic-dev-protocol"
+            exit 0
+          fi
+
+          # Allow bot accounts
+          if [[ "$PR_AUTHOR" == "github-actions[bot]" ]] || [[ "$PR_AUTHOR" == "dependabot[bot]" ]]; then
+            echo "✅ This PR is from an authorized bot"
+            exit 0
+          fi
+
+          # Block direct modifications
+          echo ""
+          echo "❌ ERROR: Direct modification of synced docs is not allowed!"
+          echo ""
+          echo "The following directories are managed by agentic-dev-protocol:"
+          echo "  - docs/llm/ (LLM-optimized policies)"
+          echo "  - docs/en/ (Human-readable documentation)"
+          echo ""
+          echo "To update these docs:"
+          echo "  1. Make changes in https://github.com/beegy-labs/agentic-dev-protocol"
+          echo "  2. Run 'Sync Docs to Projects' workflow"
+          echo "  3. Review and merge the generated PR"
+          echo ""
+          exit 1
