@@ -1,349 +1,149 @@
-# CDD (Context-Driven Development) Policy
+# CDD (Context-Driven Development)
 
-> Context management system for LLM | **Last Updated**: 2026-01-22
+> LLM context management | Last Updated: 2026-01-25
 
-## Definition
+## Core
 
-CDD is a **Constitution of Knowledge** - SSOT defining all rules and patterns for consistent, high-quality LLM output.
+```
+CDD = Constitution of Knowledge
+Principle: More value per token
+```
 
-## CDD vs SDD
-
-| Aspect     | CDD                     | SDD                       |
-| ---------- | ----------------------- | ------------------------- |
-| Focus      | How (context, patterns) | What (task, spec)         |
-| Location   | `.ai/`, `docs/llm/`     | `.specs/`                 |
-| History    | Git (document changes)  | Files → DB (task records) |
-| Human Role | None                    | Direction, Approval       |
+| Aspect | CDD | SDD |
+|--------|-----|-----|
+| Focus | HOW (patterns) | WHAT (tasks) |
+| Location | .ai/, docs/llm/ | .specs/ |
+| Human | Define patterns | Direction + Approval |
 
 ## 4-Tier Structure
 
 ```
-.ai/        → docs/llm/     → docs/en/    → docs/kr/
-(Pointer)     (SSOT)          (Generated)   (Translated)
+.ai/ (T1) -> docs/llm/ (T2) -> docs/en/ (T3) -> docs/{locale}/ (T4)
+[Pointer]    [SSOT]           [Generated]      [Translated]
+[LLM]        [LLM]            [Human]          [Human]
 ```
 
-| Tier | Path        | Purpose        | Audience | Editable | Format                    |
-| ---- | ----------- | -------------- | -------- | -------- | ------------------------- |
-| 1    | `.ai/`      | Indicators     | LLM      | **Yes**  | Tables, links, ≤50 lines  |
-| 2    | `docs/llm/` | Full specs     | LLM      | **Yes**  | YAML, tables, code blocks |
-| 3    | `docs/en/`  | Human-readable | Human    | Auto-gen | Prose, examples, guides   |
-| 4    | `docs/kr/`  | Translation    | Human    | Auto-gen | Same as docs/en/          |
+| Tier | Path | Max Lines | SSOT | Sync |
+|------|------|-----------|------|------|
+| 1 | .ai/ | 50 | Yes | Real-time |
+| 2 | docs/llm/ | 300 | Yes | Real-time |
+| 3 | docs/en/ | - | No | Batch |
+| 4 | docs/{locale}/ | - | No | Batch |
 
-## Tier Purpose Details
+**Edit Flow**: T1/T2 (edit) -> T3 (generate) -> T4 (translate)
 
-**Tier 1, 2 (LLM-facing)**:
+## File Size Limits
 
-- Core technical reference
-- Token-efficient, high-density
-- Always up-to-date with current patterns
+| Size | Lines | Tokens | Use |
+|------|-------|--------|-----|
+| XS | <=30 | ~300 | index.md |
+| S | <=50 | ~500 | .ai/*.md |
+| M | <=150 | ~1.5k | guides/ |
+| L | <=300 | ~3k | policies/ |
+| XL | <=500 | ~5k | references/ |
 
-**Tier 3, 4 (Human-facing)**:
-
-- External memory for context switching
-- Reduce cognitive load of "deep context"
-- Onboarding material for new members
-
-### Tier 3/4 Generation Rules
-
-When generating human-readable docs (Tier 3/4) from Tier 2:
-
-| Tier 2 Pattern              | Tier 3 Output   | Rationale                      |
-| --------------------------- | --------------- | ------------------------------ |
-| `foo.md` + `foo-impl.md`    | Single `foo.md` | Humans prefer complete context |
-| `foo.md` + `foo-testing.md` | Single `foo.md` | No token limits for humans     |
-| Split companion files       | Merge into main | Readability over retrieval     |
-
-**Why merge?**
-
-- Tier 2 splits optimize for LLM token limits and RAG retrieval
-- Humans read sequentially; fragmented docs hurt comprehension
-- `docs:generate` script handles merge automatically
-
-## Scope
-
-| CDD Contains                     | CDD Does NOT Contain         |
-| -------------------------------- | ---------------------------- |
-| Service/package structure        | Current task details (→ SDD) |
-| API patterns, rules              | Roadmap, progress (→ SDD)    |
-| Coding conventions               | Task history (→ SDD)         |
-| Policies (security, testing, DB) |                              |
-
-## Directory Structure
+## Context Budget (128k)
 
 ```
-my-girok/
-├── CLAUDE.md           # Claude entry point
-├── GEMINI.md           # Gemini entry point
-├── .ai/                # Tier 1 - EDITABLE (LLM pointers)
-│   ├── README.md       # Navigation hub
-│   ├── rules.md        # Core DO/DON'T
-│   ├── services/       # Service indicators
-│   ├── packages/       # Package indicators
-│   └── apps/           # App indicators
-├── docs/
-│   ├── llm/            # Tier 2 - EDITABLE (SSOT)
-│   │   ├── policies/   # Policy definitions
-│   │   ├── services/   # Service full specs
-│   │   ├── guides/     # Development guides
-│   │   └── packages/   # Package documentation
-│   ├── en/             # Tier 3 - NOT EDITABLE (Generated)
-│   └── kr/             # Tier 4 - NOT EDITABLE (Translated)
+System:      ~5k
+Conversation: ~20k
+Code:        ~30k
+Documents:   ~70k (target 40% utilization)
 ```
 
-## Edit Rules
+## Load Strategy
 
-| DO                              | DO NOT                   |
-| ------------------------------- | ------------------------ |
-| Edit `.ai/` directly            | Edit `docs/en/` directly |
-| Edit `docs/llm/` directly       | Edit `docs/kr/` directly |
-| Run generate after llm/ changes | Skip generation step     |
-| Run translate after en/ changes | Skip translation step    |
+| Action | Load | Skip |
+|--------|------|------|
+| Start | .ai/README.md | All else |
+| Find | index.md | Content files |
+| Deep dive | Specific file | Others |
+| Implement | CDD + SDD spec | History |
 
-## History Management
+### Dynamic Presets
 
-**CDD History = Git**
+| Task | Load |
+|------|------|
+| Implement | .ai/README + tasks/ + guides/ |
+| Review | workflows/review + changed files |
+| Debug | Error + related code + tech/ |
+| Plan | README + roadmap + scopes/ |
 
-| Item                      | Method                 |
-| ------------------------- | ---------------------- |
-| Document changes          | `git log`, `git blame` |
-| Version tracking          | Git commits            |
-| No separate history files | Use Git                |
+## Token Optimization
 
-**Note**: Task history is managed by SDD (`.specs/history/`), not CDD.
+| Technique | Savings | Priority |
+|-----------|---------|----------|
+| Index-first | 60-80% | High |
+| Tables > prose | 30-50% | High |
+| Tiered loading | 40-60% | High |
+| ASCII-only | 2-5% | Required |
 
-## CLI Commands
+### ASCII Policy (T1/T2)
 
-### docs:generate (docs/llm → docs/en)
+| Original | ASCII |
+|----------|-------|
+| Box chars | +, -, \| |
+| Arrows | ->, <- |
+| Checks | [x], Y/N |
+| Emojis | [!], [i] |
 
 ```bash
-pnpm docs:generate                    # Generate all (incremental)
-pnpm docs:generate --force            # Regenerate all files
-pnpm docs:generate --file <path>      # Generate specific file
-pnpm docs:generate --retry-failed     # Retry only failed files
-pnpm docs:generate --clean            # Clear history + generate all
-pnpm docs:generate --provider gemini  # Use Gemini provider
+# Validate
+grep -rP '[^\x00-\x7F]' .ai/ docs/llm/
 ```
 
-| Option           | Description                                  |
-| ---------------- | -------------------------------------------- |
-| `--provider, -p` | LLM provider: ollama (default), gemini       |
-| `--model, -m`    | Specific model name                          |
-| `--file, -f`     | Generate single file (relative to docs/llm/) |
-| `--force`        | Regenerate even if up-to-date                |
-| `--retry-failed` | Process only previously failed files         |
-| `--clean`        | Clear failed history and restart all         |
+## Primacy/Recency Bias
 
-### docs:translate (docs/en → docs/kr)
+| Position | Recall | Content |
+|----------|--------|---------|
+| First 20% | High | Rules, current task |
+| Middle 60% | Low | References, examples |
+| Last 10% | High | Output format |
 
-```bash
-pnpm docs:translate --locale kr             # Translate all
-pnpm docs:translate --locale kr --file <p>  # Translate specific file
-pnpm docs:translate --locale kr --retry-failed  # Retry failed only
-pnpm docs:translate --locale kr --clean     # Clear history + translate all
-pnpm docs:translate --provider gemini       # Use Gemini provider
-```
-
-| Option           | Description                                     |
-| ---------------- | ----------------------------------------------- |
-| `--locale, -l`   | Target locale: kr (default), ja, zh, es, fr, de |
-| `--provider, -p` | LLM provider: ollama (default), gemini          |
-| `--model, -m`    | Specific model name                             |
-| `--file, -f`     | Translate single file (relative to docs/en/)    |
-| `--retry-failed` | Process only previously failed files            |
-| `--clean`        | Clear failed history and restart all            |
-
-## Supported Providers
-
-| Provider | Generate | Translate | Default Model |
-| -------- | -------- | --------- | ------------- |
-| Ollama   | ✓        | ✓         | gpt-oss:20b   |
-| Gemini   | ✓        | ✓         | gemini-pro    |
-
-## Failed Files Recovery
-
-Scripts track failed files for retry:
-
-| Script    | Failed Files Location         |
-| --------- | ----------------------------- |
-| generate  | `.docs-generate-failed.json`  |
-| translate | `.docs-translate-failed.json` |
-
-### Recovery Workflow
-
-```bash
-# 1. First run - some files fail
-pnpm docs:translate --locale kr
-# Output: Success: 45, Failed: 5
-
-# 2. Retry only failed files
-pnpm docs:translate --locale kr --retry-failed
-# Output: Retrying 5 failed files...
-
-# 3. Or restart everything
-pnpm docs:translate --locale kr --clean
-# Output: 🧹 Cleared failed files history
-```
-
-## Line Limits (RAG Optimized)
-
-Based on 128k context window optimization and RAG best practices.
-
-### Tier 1 (.ai/)
+## Observability
 
 ```yaml
-max_lines: 50
-tokens: ~500
-purpose: Quick navigation, pointers to Tier 2
+target: 40% context utilization
+alert: >60% -> split task
+metrics: tokens/session, files/task
 ```
 
-### Tier 2 (docs/llm/) - By Document Type
+## T3 Generation
 
-| Path              | Max Lines | Tokens | Rationale                     |
-| ----------------- | --------- | ------ | ----------------------------- |
-| `*.md` (root)     | 200       | ~2,000 | Core reference documents      |
-| `policies/`       | 200       | ~2,000 | Core rules, frequently loaded |
-| `services/`       | 200       | ~2,000 | Per-service SSOT              |
-| `guides/`         | 150       | ~1,500 | Focused how-to, splittable    |
-| `apps/`           | 150       | ~1,500 | Per-app specification         |
-| `packages/`       | 150       | ~1,500 | Package documentation         |
-| `components/`     | 100       | ~1,000 | Single component spec         |
-| `templates/`      | 100       | ~1,000 | Small templates               |
-| `features/`       | 100       | ~1,000 | Feature specifications        |
-| `infrastructure/` | 150       | ~1,500 | Infra documentation           |
-| `references/`     | 300       | ~3,000 | External knowledge, complete  |
-
-### Tolerance (Minor Over-Limit)
-
-Files exceeding limit by **1-10 lines** are acceptable:
-
-- Splitting would cause excessive fragmentation
-- No significant RAG retrieval impact
-- Review during major updates
-
-### Exceptions (Framework Documents)
-
-These documents define the methodology itself and are exempt from line limits:
-
-| File                                  | Reason                                   |
-| ------------------------------------- | ---------------------------------------- |
-| `policies/cdd.md`                     | CDD framework definition (this document) |
-| `policies/sdd.md`                     | SDD framework definition with templates  |
-| `policies/development-methodology.md` | Core methodology (loads cdd.md, sdd.md)  |
-
-**Criteria for exception:**
-
-- Document defines the framework/methodology itself
-- Requires full context to understand (splitting breaks comprehension)
-- Loaded infrequently (onboarding, planning sessions only)
-
-### Split Guidelines
-
-**Minimum sizes after split:**
-
-| Document Type | Main File | Companion File | Total Before Split |
-| ------------- | --------- | -------------- | ------------------ |
-| policies/     | ≥120      | ≥60            | >200               |
-| services/     | ≥120      | ≥60            | >200               |
-| guides/       | ≥90       | ≥50            | >150               |
-| apps/         | ≥90       | ≥50            | >150               |
-| packages/     | ≥90       | ≥50            | >150               |
-| components/   | ≥60       | ≥40            | >100               |
-
-**Split decision criteria:**
-
-| Condition                      | Action                   |
-| ------------------------------ | ------------------------ |
-| Over limit by 1-10 lines       | Keep as-is (tolerance)   |
-| Over limit by 11-30 lines      | Evaluate semantic split  |
-| Over limit by >30 lines        | Split required           |
-| Companion would be <50 lines   | Keep as-is (fragmented)  |
-| Clear semantic boundary exists | Split (impl/testing/ops) |
-| Independent lookup value       | Split (enums, tables)    |
-
-**Split naming conventions:**
-
-| Content Type   | Suffix Example              |
-| -------------- | --------------------------- |
-| Implementation | `-impl.md`                  |
-| Testing        | `-testing.md`               |
-| Operations     | `-operations.md`, `-ops.md` |
-| Advanced       | `-advanced.md`              |
-| Patterns       | `-patterns.md`              |
-| Security       | `-security.md`              |
-| Architecture   | `-arch.md`                  |
-
-### Context Budget (128k)
+| T2 (LLM) | T3 (Human) |
+|----------|------------|
+| Tables | Prose |
+| ASCII art | Mermaid |
+| Split files | Merged docs |
+| Minimal | Explanatory |
 
 ```
-128k context allocation:
-├── System prompt:     ~5k tokens
-├── Conversation:     ~20k tokens
-├── Code context:     ~30k tokens
-└── Documents:        ~70k tokens (35 × 2,000 avg)
+Generate: docs/llm/ -> docs/en/
+Translate: docs/en/ -> docs/{locale}/
 ```
 
-### Format Rules
+## Index Format
 
-| Tier | Format                     | Optimization      |
-| ---- | -------------------------- | ----------------- |
-| 1    | Tables, links only         | Minimal tokens    |
-| 2    | YAML, tables, code blocks  | Token efficiency  |
-| 3    | Prose, examples (auto-gen) | Human readability |
+```markdown
+# {Category} Index
 
-### Language Policy
-
-**All CDD documents MUST be written in English.**
-
-- Code: English
-- Documentation: English
-- Comments: English
-- Commits: English
-
-## Update Requirements
-
-| Change Type        | .ai/               | docs/llm/      |
-| ------------------ | ------------------ | -------------- |
-| New component/hook | apps/ or packages/ | -              |
-| New API endpoint   | services/          | services/      |
-| New pattern        | rules.md           | -              |
-| Major feature      | relevant file      | guides/        |
-| New policy         | rules.md summary   | policies/ full |
-
-## AI Entry Points
-
-| AI     | Entry File | First Read   |
-| ------ | ---------- | ------------ |
-| Claude | CLAUDE.md  | .ai/rules.md |
-| Gemini | GEMINI.md  | .ai/rules.md |
-
-## Workflow Example
-
-```bash
-# 1. Developer updates SSOT
-vim docs/llm/services/auth-service.md
-
-# 2. Generate English docs
-pnpm docs:generate
-
-# 3. Translate to Korean
-pnpm docs:translate --locale kr
-
-# 4. Commit all changes
-git add docs/
-git commit -m "docs: update auth-service documentation"
+| Name | Path | Keywords |
+|------|------|----------|
+| Auth | auth.md | jwt, session |
 ```
 
 ## Best Practices
 
-| Practice              | Description                        |
-| --------------------- | ---------------------------------- |
-| Tier 1 = Pointer only | Never put full specs in .ai/       |
-| Tier 2 = SSOT         | Single source of truth for LLM     |
-| Git = History         | No separate changelog files in CDD |
-| Token efficiency      | Tables > prose, YAML > JSON        |
-| Cross-reference       | .ai/ always links to docs/llm/     |
+| Practice | Rule |
+|----------|------|
+| Index first | Every dir needs index.md |
+| T1 = Pointer | No full specs in .ai/ |
+| T2 = SSOT | Single source of truth |
+| Tables > prose | Token efficiency |
+| 40% budget | Leave room for code |
 
 ## References
 
-- Methodology: `docs/llm/policies/development-methodology.md`
-- SDD Policy: `docs/llm/policies/sdd.md`
+- SDD: docs/llm/policies/sdd.md
+- ADD: docs/llm/policies/add.md
+- Best Practices: docs/llm/references/2026-best-practices.md

@@ -46,20 +46,23 @@ Senior developers direct **3-5 projects simultaneously** by delegating all non-c
 ## Three-Phase Architecture
 
 ```
-CDD (Context-Driven Development)     → Rules, patterns, conventions
-    ↓
-SDD (Spec-Driven Development)        → Tasks, roadmap, progress
-    ↓
-ADD (Agent-Driven Development)       → Autonomous execution
-    ↓
-Update CDD → Loop
+CDD (Context-Driven Development)     -> Rules, patterns, conventions
+    |
+    v
+SDD (Spec-Driven Development)        -> Tasks, roadmap, progress
+    |
+    v
+ADD (Agent-Driven Development)       -> Autonomous execution
+    |
+    v
+Update CDD -> Loop
 ```
 
-| Phase | Status     | Details           |
-| ----- | ---------- | ----------------- |
-| CDD   | ✅ Active  | `cdd.md`          |
-| SDD   | ✅ Active  | `sdd.md`          |
-| ADD   | 🗓️ Planned | `add.md` (future) |
+| Phase | Status    | Details   |
+| ----- | --------- | --------- |
+| CDD   | Active    | `cdd.md`  |
+| SDD   | Active    | `sdd.md`  |
+| ADD   | Active    | `add.md`  |
 
 ## Summary: Policy vs Roadmap
 
@@ -83,11 +86,11 @@ Update CDD → Loop
 
 ## References
 
-| Policy | File                       | Status     |
-| ------ | -------------------------- | ---------- |
-| CDD    | `docs/llm/policies/cdd.md` | ✅ Active  |
-| SDD    | `docs/llm/policies/sdd.md` | ✅ Active  |
-| ADD    | `docs/llm/policies/add.md` | 🗓️ Planned |
+| Policy | File                       | Status |
+| ------ | -------------------------- | ------ |
+| CDD    | `docs/llm/policies/cdd.md` | Active |
+| SDD    | `docs/llm/policies/sdd.md` | Active |
+| ADD    | `docs/llm/policies/add.md` | Active |
 
 ---
 

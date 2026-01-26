@@ -53,15 +53,15 @@ When escalation is necessary:
 ## Multi-LLM Consensus (Roadmap)
 
 ```yaml
-status: '🗓️ Roadmap'
+status: '[Roadmap]'
 phase: 'Medium-term'
 
 process:
   1: 'Problem occurs during implementation'
   2: 'Summon peer LLMs for verification'
   3: 'Each LLM independently evaluates'
-  4: 'Consensus reached → proceed'
-  5: 'Consensus failed → escalate to Architect'
+  4: 'Consensus reached -> proceed'
+  5: 'Consensus failed -> escalate to Architect'
 
 validation_requirement:
   - 'Consensus alone is insufficient'
@@ -72,13 +72,13 @@ validation_requirement:
 ## Experience Distillation (Roadmap)
 
 ```yaml
-status: '🗓️ Roadmap'
+status: '[Roadmap]'
 phase: 'Long-term'
 
 process:
   1_record: 'All trial-and-error, resolutions, escalations'
   2_analyze: 'Identify patterns worth preserving'
-  3_distill: 'Extract abstracted principles → CDD candidates'
+  3_distill: 'Extract abstracted principles -> CDD candidates'
   4_apply: 'Update CDD (Tier 1, 2) with Architect approval'
 
 benefit:
