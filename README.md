@@ -56,19 +56,24 @@ agentic-dev-protocol (this repo)
 ### 1. Add Submodule
 
 ```bash
-# Add agentic-dev-protocol as submodule
 git submodule add https://github.com/beegy-labs/agentic-dev-protocol vendor/agentic-dev-protocol
-
-# Create symlinks
-mkdir -p docs
-ln -s ../vendor/agentic-dev-protocol/docs/llm docs/llm
-ln -s ../vendor/agentic-dev-protocol/docs/en docs/en
-
-git add .
-git commit -m "chore: Add agentic-dev-protocol as submodule"
 ```
 
-### 2. Add Renovate Config
+### 2. Create Policy Symlinks
+
+```bash
+# Run setup script (creates file-level symlinks)
+./vendor/agentic-dev-protocol/scripts/setup-policy-links.sh
+
+# Commit
+git add .
+git commit -m "chore: Add agentic-dev-protocol with policy symlinks"
+```
+
+**Important**: Use file-level symlinks, not directory symlinks.
+This preserves your project-specific documentation in `docs/llm/` and `docs/en/`.
+
+### 3. Add Renovate Config
 
 Create `renovate.json`:
 
@@ -93,7 +98,7 @@ Create `renovate.json`:
 }
 ```
 
-### 3. Install Renovate GitHub App
+### 4. Install Renovate GitHub App
 
 Install from: https://github.com/apps/renovate
 
@@ -113,6 +118,8 @@ agentic-dev-protocol/
 │       ├── cdd.md
 │       ├── sdd.md
 │       └── add.md
+├── scripts/
+│   └── setup-policy-links.sh   # Symlink automation script
 ├── vendor/                     # External dependencies (future)
 └── renovate.json
 ```
@@ -122,14 +129,23 @@ agentic-dev-protocol/
 ```
 my-girok/
 ├── vendor/
-│   └── agentic-dev-protocol/       # [Submodule] Read-only
+│   └── agentic-dev-protocol/           # [Submodule] Read-only
 ├── docs/
-│   ├── llm -> ../vendor/.../llm    # [Symlink]
-│   ├── en -> ../vendor/.../en      # [Symlink]
-│   └── project/                    # Project-specific docs
-├── .ai/                            # Project-specific context
-├── .specs/                         # Project-specific specs
-└── renovate.json                   # Auto-merge config
+│   ├── llm/
+│   │   └── policies/
+│   │       ├── cdd.md -> symlink       # [Shared] From submodule
+│   │       ├── sdd.md -> symlink       # [Shared] From submodule
+│   │       ├── add.md -> symlink       # [Shared] From submodule
+│   │       └── project-specific.md     # [Project] Your own docs
+│   ├── en/
+│   │   ├── cdd.md -> symlink           # [Shared] From submodule
+│   │   ├── sdd.md -> symlink           # [Shared] From submodule
+│   │   ├── add.md -> symlink           # [Shared] From submodule
+│   │   └── guides/                     # [Project] Your own docs
+│   └── project/                        # [Project] Project-specific
+├── .ai/                                # Project-specific context
+├── .specs/                             # Project-specific specs
+└── renovate.json                       # Auto-merge config
 ```
 
 ## CDD 4-Tier Structure
