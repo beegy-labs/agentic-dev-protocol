@@ -1,6 +1,6 @@
 # CDD (Context-Driven Development)
 
-> LLM context management | Last Updated: 2026-01-25
+> LLM context management | Last Updated: 2026-01-27
 
 ## Core
 
