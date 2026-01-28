@@ -9,7 +9,7 @@ This repository is the **Single Source of Truth** for development policies acros
 ```
 agentic-dev-protocol (this repo)
         │
-        │ Git Submodule + Renovate (Auto-merge)
+        │ Git Submodule + GitHub Actions (6-hour sync)
         ▼
 ┌───────────────────┬───────────────────┐
 │  vibe-coding-     │     my-girok      │
@@ -34,10 +34,10 @@ agentic-dev-protocol (this repo)
 1. Developer modifies agentic-dev-protocol
    └── git push origin main
 
-2. Renovate detects submodule change (within minutes)
-   └── Creates update commit in target repos
+2. GitHub Actions (every 6 hours)
+   └── git submodule update --remote
 
-3. Target repos auto-merge
+3. If changed, auto-commit and push
    └── my-girok (develop), vibe-coding-starter (main)
 
 4. Done - All projects have latest policies
@@ -49,7 +49,7 @@ agentic-dev-protocol (this repo)
 |-------|------------|
 | Submodule | Separate repo, can't modify directly |
 | Symlink | Points to submodule, read-only |
-| Renovate | Auto-overwrites on any change |
+| GitHub Actions | Auto-overwrites on schedule |
 
 ## Setup for New Projects
 
@@ -73,34 +73,39 @@ git commit -m "chore: Add agentic-dev-protocol with policy symlinks"
 **Important**: Use file-level symlinks, not directory symlinks.
 This preserves your project-specific documentation in `docs/llm/` and `docs/en/`.
 
-### 3. Add Renovate Config
+### 3. Add GitHub Actions Workflow
 
-Create `renovate.json`:
+Create `.github/workflows/update-submodule.yml`:
 
-```json
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "git-submodules": {
-    "enabled": true
-  },
-  "packageRules": [
-    {
-      "matchManagers": ["git-submodules"],
-      "matchPackageNames": ["agentic-dev-protocol"],
-      "automerge": true,
-      "automergeType": "branch",
-      "schedule": ["at any time"],
-      "commitMessagePrefix": "chore(policy):",
-      "commitMessageTopic": "agentic-dev-protocol"
-    }
-  ]
-}
+```yaml
+name: Update Policy Submodule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Update submodule
+        run: git submodule update --remote vendor/agentic-dev-protocol
+
+      - name: Commit and push if changed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add vendor/agentic-dev-protocol
+            git commit -m "chore(policy): Update agentic-dev-protocol"
+            git push
+          fi
 ```
-
-### 4. Install Renovate GitHub App
-
-Install from: https://github.com/apps/renovate
 
 ## Repository Structure
 
@@ -120,32 +125,32 @@ agentic-dev-protocol/
 │       └── add.md
 ├── scripts/
 │   └── setup-policy-links.sh   # Symlink automation script
-├── vendor/                     # External dependencies (future)
-└── renovate.json
+└── vendor/                     # External dependencies (future)
 ```
 
 ## Target Repo Structure
 
 ```
 my-girok/
+├── .github/workflows/
+│   └── update-submodule.yml        # Auto-sync workflow
 ├── vendor/
-│   └── agentic-dev-protocol/           # [Submodule] Read-only
+│   └── agentic-dev-protocol/       # [Submodule] Read-only
 ├── docs/
 │   ├── llm/
 │   │   └── policies/
-│   │       ├── cdd.md -> symlink       # [Shared] From submodule
-│   │       ├── sdd.md -> symlink       # [Shared] From submodule
-│   │       ├── add.md -> symlink       # [Shared] From submodule
-│   │       └── project-specific.md     # [Project] Your own docs
+│   │       ├── cdd.md -> symlink   # [Shared] From submodule
+│   │       ├── sdd.md -> symlink   # [Shared] From submodule
+│   │       ├── add.md -> symlink   # [Shared] From submodule
+│   │       └── project-specific.md # [Project] Your own docs
 │   ├── en/
-│   │   ├── cdd.md -> symlink           # [Shared] From submodule
-│   │   ├── sdd.md -> symlink           # [Shared] From submodule
-│   │   ├── add.md -> symlink           # [Shared] From submodule
-│   │   └── guides/                     # [Project] Your own docs
-│   └── project/                        # [Project] Project-specific
-├── .ai/                                # Project-specific context
-├── .specs/                             # Project-specific specs
-└── renovate.json                       # Auto-merge config
+│   │   ├── cdd.md -> symlink       # [Shared] From submodule
+│   │   ├── sdd.md -> symlink       # [Shared] From submodule
+│   │   ├── add.md -> symlink       # [Shared] From submodule
+│   │   └── guides/                 # [Project] Your own docs
+│   └── project/                    # [Project] Project-specific
+├── .ai/                            # Project-specific context
+└── .specs/                         # Project-specific specs
 ```
 
 ## CDD 4-Tier Structure
@@ -178,11 +183,15 @@ git commit -m "chore: Update agentic-dev-protocol"
 git push
 ```
 
+## Manual Trigger (urgent update)
+
+Go to GitHub → Actions → Update Policy Submodule → Run workflow
+
 ## Contributing
 
 1. Modify policies in this repository
 2. Push to main branch
-3. Renovate auto-updates all target repos
+3. GitHub Actions auto-updates all target repos (within 6 hours)
 
 ## Related
 
