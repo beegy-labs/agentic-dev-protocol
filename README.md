@@ -11,11 +11,11 @@ agentic-dev-protocol (this repo)
         │
         │ Git Submodule + GitHub Actions (6-hour sync)
         ▼
-┌───────────────────┬───────────────────┐
-│  vibe-coding-     │     my-girok      │
-│  starter          │                   │
-│  (main)           │    (develop)      │
-└───────────────────┴───────────────────┘
+┌───────────────────┬───────────────────┬───────────────────┐
+│  vibe-coding-     │     my-girok      │     giterm        │
+│  starter          │                   │                   │
+│  (main)           │    (develop)      │    (develop)      │
+└───────────────────┴───────────────────┴───────────────────┘
 ```
 
 ## Core Methodology
@@ -38,7 +38,7 @@ agentic-dev-protocol (this repo)
    └── git submodule update --remote
 
 3. If changed, auto-commit and push
-   └── my-girok (develop), vibe-coding-starter (main)
+   └── my-girok (develop), vibe-coding-starter (main), giterm (develop)
 
 4. Done - All projects have latest policies
 ```
@@ -200,6 +200,7 @@ Go to GitHub → Actions → Update Policy Submodule → Run workflow
 
 - [vibe-coding-starter](https://github.com/beegy-labs/vibe-coding-starter) - Monorepo template
 - [my-girok](https://github.com/beegy-labs/my-girok) - Production project
+- [giterm](https://github.com/beegy-labs/giterm) - Vibe Coding Orchestrator
 
 ## License
 
