@@ -1,0 +1,23 @@
+name: Notify Dependent Repos
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo:
+          - beegy-labs/my-girok
+          - beegy-labs/vibe-coding-starter
+          - beegy-labs/giterm
+    steps:
+      - name: Dispatch to ${{ matrix.repo }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: policy-updated
