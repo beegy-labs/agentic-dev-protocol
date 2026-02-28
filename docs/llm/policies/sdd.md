@@ -177,9 +177,9 @@ Menu structure implementation
 
 | Priority | Feature           | Status |
 | -------- | ----------------- | ------ |
-| P0       | Menu config       | ⏳     |
-| P1       | Route setup       | ⏳     |
-| P2       | Permission checks | ⏳     |
+| P0       | Menu config       | todo   |
+| P1       | Route setup       | todo   |
+| P2       | Permission checks | todo   |
 
 ## Success Criteria
 
@@ -272,4 +272,6 @@ Future:  DB MCP
 
 - Methodology: `docs/llm/policies/development-methodology.md`
 - CDD Policy: `docs/llm/policies/cdd.md`
-- Industry Best Practices: Thoughtworks SDD, Addy Osmani Workflow
+- ADD Policy: `docs/llm/policies/add.md`
+- Token Optimization: `docs/llm/policies/token-optimization.md`
+- Monorepo Structure: `docs/llm/policies/monorepo.md`

@@ -138,9 +138,7 @@ Each project's `AGENTS.md` consists of two parts:
 | **Performance**  | SLA targets, latency requirements, throughput       |
 | **Security**     | Auth schemes, encryption standards, access controls |
 
-### Examples by Domain
-
-#### SaaS Product
+### Example: SaaS Product
 
 ```markdown
 ## Project-Specific Configuration
@@ -162,7 +160,7 @@ Each project's `AGENTS.md` consists of two parts:
 | ai_suggestions     | false   | false      | AI-powered suggestions |
 ```
 
-#### Financial Services
+### Example: Financial Services
 
 ```markdown
 ## Project-Specific Configuration
@@ -184,7 +182,7 @@ Each project's `AGENTS.md` consists of two parts:
 | Wire Transfer | $100,000    | $50,000         | KYC + Manual Review   |
 ```
 
-#### Healthcare
+### Example: Healthcare
 
 ```markdown
 ## Project-Specific Configuration
@@ -384,8 +382,10 @@ Custom section can reference standard version:
 
 ---
 
-**Related**:
+## References
 
-- Standard Policy: `llm-dev-protocol/AGENTS.md`
-- Sync Script: `llm-dev-protocol/scripts/sync-standards.sh`
-- Migration Script: `llm-dev-protocol/scripts/migrate-agents-md.sh`
+- ADD Policy: `docs/llm/policies/add.md`
+- CDD Policy: `docs/llm/policies/cdd.md`
+- Token Optimization: `docs/llm/policies/token-optimization.md`
+- Methodology: `docs/llm/policies/development-methodology.md`
+- Setup Script: `scripts/setup-policy-links.sh`
