@@ -13,11 +13,13 @@
 
 ## Core Methodology
 
-| Policy | Purpose                      | SSOT                           |
-| ------ | ---------------------------- | ------------------------------ |
-| CDD    | Context-Driven Development   | `docs/llm/policies/cdd.md`     |
-| SDD    | Spec-Driven Development      | `docs/llm/policies/sdd.md`     |
-| ADD    | Agent-Driven Development     | `docs/llm/policies/add.md`     |
+| Policy  | Purpose                      | SSOT                                         |
+| ------- | ---------------------------- | -------------------------------------------- |
+| CDD     | Context-Driven Development   | `docs/llm/policies/cdd.md`                   |
+| SDD     | Spec-Driven Development      | `docs/llm/policies/sdd.md`                   |
+| ADD     | Agent-Driven Development     | `docs/llm/policies/add.md`                   |
+| TOKEN   | Token Optimization Rules     | `docs/llm/policies/token-optimization.md`    |
+| MONOREPO| Backend/Frontend Structure   | `docs/llm/policies/monorepo.md`              |
 
 ## Development Flow
 
@@ -33,9 +35,10 @@ CDD (HOW - Patterns) → SDD (WHAT - Tasks) → ADD (DO - Execution)
 
 ## Quick Links
 
-| Topic       | Tier 2 SSOT                                        |
-| ----------- | -------------------------------------------------- |
-| Methodology | `docs/llm/policies/development-methodology.md`     |
+| Topic       | Tier 2 SSOT                                            |
+| ----------- | ------------------------------------------------------ |
+| Methodology | `docs/llm/policies/development-methodology.md`         |
 | Details     | `docs/llm/policies/development-methodology-details.md` |
+| Monorepo    | `docs/llm/policies/monorepo.md`                        |
 
 **CDD Policy**: `docs/llm/policies/cdd.md`

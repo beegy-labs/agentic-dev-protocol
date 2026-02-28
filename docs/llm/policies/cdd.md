@@ -64,8 +64,10 @@ When generating human-readable docs (Tier 3/4) from Tier 2:
 | CDD Contains                     | CDD Does NOT Contain         |
 | -------------------------------- | ---------------------------- |
 | Service/package structure        | Current task details (→ SDD) |
-| API patterns, rules              | Roadmap, progress (→ SDD)    |
-| Coding conventions               | Task history (→ SDD)         |
+| Monorepo layout conventions      | Roadmap, progress (→ SDD)    |
+| API patterns, rules              | Task history (→ SDD)         |
+| Coding conventions               |                              |
+| Token optimization format rules  |                              |
 | Policies (security, testing, DB) |                              |
 
 ## Directory Structure
@@ -181,7 +183,7 @@ pnpm docs:translate --locale kr --retry-failed
 
 # 3. Or restart everything
 pnpm docs:translate --locale kr --clean
-# Output: 🧹 Cleared failed files history
+# Output: Cleared failed files history
 ```
 
 ## Line Limits (RAG Optimized)
@@ -290,6 +292,20 @@ These documents define the methodology itself and are exempt from line limits:
 | 2    | YAML, tables, code blocks  | Token efficiency  |
 | 3    | Prose, examples (auto-gen) | Human readability |
 
+### Token Optimization (Tier 1 & 2)
+
+**Full rules**: `docs/llm/policies/token-optimization.md`
+
+| Category | Forbidden | Required |
+| -------- | --------- | -------- |
+| Characters | Emoji, box-drawing chars, decorative ASCII | Plain text, ✓/✗ only |
+| Indentation | Tab chars, 4-space indent, trailing spaces | 2-space indent, max 2 levels |
+| Structure | ≥3 nesting levels, H4+ headers | Tables, flat bullets (≤2 levels) |
+| Format | JSON configs, verbose prose | YAML configs, tables > prose |
+| Phrases | "Please note", "As mentioned", filler text | Imperative, concise |
+| Whitespace | 3+ consecutive blank lines | Max 1 blank line |
+| Caching | Dynamic content before static | Static-first ordering |
+
 ### Language Policy
 
 **All CDD documents MUST be written in English.**
@@ -335,15 +351,23 @@ git commit -m "docs: update auth-service documentation"
 
 ## Best Practices
 
-| Practice              | Description                        |
-| --------------------- | ---------------------------------- |
-| Tier 1 = Pointer only | Never put full specs in .ai/       |
-| Tier 2 = SSOT         | Single source of truth for LLM     |
-| Git = History         | No separate changelog files in CDD |
-| Token efficiency      | Tables > prose, YAML > JSON        |
-| Cross-reference       | .ai/ always links to docs/llm/     |
+| Practice              | Description                                    |
+| --------------------- | ---------------------------------------------- |
+| Tier 1 = Pointer only | Never put full specs in .ai/                   |
+| Tier 2 = SSOT         | Single source of truth for LLM                 |
+| Git = History         | No separate changelog files in CDD             |
+| Token efficiency      | Tables > prose, YAML > JSON                    |
+| Cross-reference       | .ai/ always links to docs/llm/                 |
+| No emoji/ASCII art    | Forbidden in Tier 1/2 (→ token-optimization.md)|
+| No deep nesting       | Max 2 nesting levels; convert to table         |
+| Static-first ordering | Fixed content before dynamic (prefix caching)  |
 
 ## References
 
 - Methodology: `docs/llm/policies/development-methodology.md`
+- Methodology Details: `docs/llm/policies/development-methodology-details.md`
 - SDD Policy: `docs/llm/policies/sdd.md`
+- ADD Policy: `docs/llm/policies/add.md`
+- Token Optimization: `docs/llm/policies/token-optimization.md`
+- Monorepo Structure: `docs/llm/policies/monorepo.md`
+- Agents Customization: `docs/llm/policies/agents-customization.md`

@@ -191,6 +191,8 @@ After work:
 
 ## References
 
-- CDD: docs/llm/policies/cdd.md
-- SDD: docs/llm/policies/sdd.md
-- Workflow: .ai/workflows/implementation.md
+- CDD: `docs/llm/policies/cdd.md`
+- SDD: `docs/llm/policies/sdd.md`
+- Token Optimization: `docs/llm/policies/token-optimization.md`
+- Monorepo Structure: `docs/llm/policies/monorepo.md`
+- Methodology: `docs/llm/policies/development-methodology.md`

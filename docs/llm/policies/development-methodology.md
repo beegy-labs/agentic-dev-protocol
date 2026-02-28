@@ -86,11 +86,13 @@ Update CDD -> Loop
 
 ## References
 
-| Policy | File                       | Status |
-| ------ | -------------------------- | ------ |
-| CDD    | `docs/llm/policies/cdd.md` | Active |
-| SDD    | `docs/llm/policies/sdd.md` | Active |
-| ADD    | `docs/llm/policies/add.md` | Active |
+| Policy  | File                                          | Status |
+| ------- | --------------------------------------------- | ------ |
+| CDD     | `docs/llm/policies/cdd.md`                    | Active |
+| SDD     | `docs/llm/policies/sdd.md`                    | Active |
+| ADD     | `docs/llm/policies/add.md`                    | Active |
+| TOKEN   | `docs/llm/policies/token-optimization.md`     | Active |
+| MONOREPO| `docs/llm/policies/monorepo.md`               | Active |
 
 ---
 
