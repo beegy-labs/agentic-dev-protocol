@@ -204,9 +204,9 @@ Estimate: ~4 chars = 1 token (English). Target/max per file type:
 | -------- | ------ | --- |
 | Tier 1 (`.ai/`) | ~300 tokens | 500 |
 | Tier 2 `policies/` | ~1,500 tokens | 2,000 |
-| Tier 2 `services/` | ~1,500 tokens | 2,000 |
-| Tier 2 `guides/` | ~1,000 tokens | 1,500 |
-| Tier 2 `components/` | ~700 tokens | 1,000 |
+| Tier 2 `{domain}/` (core) | ~1,500 tokens | 2,000 |
+| Tier 2 `{domain}/pages/` | ~1,000 tokens | 1,500 |
+| Tier 2 `research/` | ~1,500 tokens | 2,000 |
 
 ## Prefix Caching Optimization
 
