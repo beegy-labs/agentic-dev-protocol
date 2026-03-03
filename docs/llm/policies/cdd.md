@@ -1,6 +1,6 @@
 # CDD (Context-Driven Development) Policy
 
-> Context management system for LLM | **Last Updated**: 2026-01-22
+> Context management system for LLM | **Last Updated**: 2026-03-03
 
 ## Definition
 
@@ -72,25 +72,104 @@ When generating human-readable docs (Tier 3/4) from Tier 2:
 
 ## Directory Structure
 
+**Organization: Domain-based (recommended).** Group by bounded domain, not by artifact type.
+
 ```
-my-girok/
+project/
 ├── CLAUDE.md           # Claude entry point
 ├── GEMINI.md           # Gemini entry point
 ├── .ai/                # Tier 1 - EDITABLE (LLM pointers)
-│   ├── README.md       # Navigation hub
+│   ├── README.md       # Navigation hub (domain index)
 │   ├── rules.md        # Core DO/DON'T
-│   ├── services/       # Service indicators
-│   ├── packages/       # Package indicators
-│   └── apps/           # App indicators
+│   ├── architecture.md # Architecture pointer
+│   └── git-flow.md     # Git workflow pointer
 ├── docs/
 │   ├── llm/            # Tier 2 - EDITABLE (SSOT)
-│   │   ├── policies/   # Policy definitions
-│   │   ├── services/   # Service full specs
-│   │   ├── guides/     # Development guides
-│   │   └── packages/   # Package documentation
+│   │   ├── README.md   # Master index with keywords
+│   │   ├── policies/   # Cross-cutting rules (all domains)
+│   │   ├── {domain-a}/ # Domain folder (e.g. auth/)
+│   │   ├── {domain-b}/ # Domain folder (e.g. inference/)
+│   │   ├── {domain-c}/ # Domain folder (e.g. providers/)
+│   │   └── research/   # External knowledge (by topic)
 │   ├── en/             # Tier 3 - NOT EDITABLE (Generated)
 │   └── kr/             # Tier 4 - NOT EDITABLE (Translated)
 ```
+
+### Why Domain-Based
+
+| Criterion | Type-based (`services/`, `guides/`) | Domain-based (`auth/`, `infra/`) |
+| --------- | ----------------------------------- | -------------------------------- |
+| Retrieval precision | Low (scattered across folders) | High (scoped by domain) |
+| Token efficiency | Poor (loads cross-domain) | Good (loads single domain) |
+| Path-as-signal | Weak (type, not domain) | Strong (path = domain) |
+| Collocation | Low (5 folders for 1 domain) | High (1 folder per domain) |
+| Code alignment | None | Direct mapping to architecture |
+
+Reference: arXiv:2602.20478 (Codified Context) organizes 34 specs by subsystem, not by type.
+
+### Domain Folder Guidelines
+
+| Guideline | Detail |
+| --------- | ------ |
+| One folder per bounded domain | `auth/`, `billing/`, `infra/`, `frontend/` |
+| `policies/` is always cross-cutting | Architecture, patterns, git-flow, terminology |
+| `research/` for external knowledge | Sub-organized by topic: `research/frontend/`, `research/backend/` |
+| New domains = new folders | Do not force-fit into existing domains |
+| Monorepo: per-service domains | `api-gateway/`, `worker/`, `shared/` |
+
+### Internal Structure per Domain
+
+Each domain folder should contain focused files scoped to one concept:
+
+| Internal Pattern | Example Files | When to Use |
+| ---------------- | ------------- | ----------- |
+| Core + routing/ops split | `ollama.md`, `ollama-routing.md` | Complex subsystems with separate concerns |
+| Mechanism-per-file | `jwt-sessions.md`, `api-keys.md`, `rbac.md` | Multiple independent mechanisms |
+| Lifecycle + analytics | `job-lifecycle.md`, `job-analytics.md` | Entities with observation pipeline |
+| Deploy + platform | `deploy.md`, `deploy-helm.md` | Multi-target deployment |
+| System + sub-pages | `design-system.md`, `pages/keys.md` | Frontend with shared system + page specs |
+
+### Domain Examples (Reference Implementations)
+
+**Backend API project:**
+
+```
+docs/llm/
+├── policies/    # architecture.md, patterns-rust.md, git-flow.md
+├── auth/        # jwt-sessions.md, api-keys.md, rbac.md, security.md
+├── inference/   # job-lifecycle.md, job-analytics.md, openai-compat.md
+├── providers/   # ollama.md, ollama-routing.md, gemini.md, pricing.md
+├── infra/       # deploy.md, deploy-helm.md, otel-pipeline.md, hardware.md
+├── frontend/    # design-system.md, i18n.md, pages/jobs.md, pages/keys.md
+└── research/    # frontend/react.md, backend/rust-axum.md
+```
+
+**SaaS monorepo project:**
+
+```
+docs/llm/
+├── policies/    # architecture.md, patterns.md, monorepo.md
+├── auth/        # oauth.md, rbac.md, mfa.md
+├── billing/     # plans.md, stripe.md, invoicing.md
+├── api/         # rest.md, graphql.md, webhooks.md
+├── worker/      # queue.md, retry.md, dead-letter.md
+├── frontend/    # design-system.md, pages/dashboard.md, pages/settings.md
+└── infra/       # ci-cd.md, k8s.md, monitoring.md
+```
+
+### Fallback: Type-Based (Early Projects)
+
+For new projects where domains are not yet identified, use type-based as a temporary structure:
+
+```
+docs/llm/
+├── policies/    # Always present
+├── services/    # All service specs (flat)
+├── guides/      # How-to documents
+└── packages/    # Package documentation
+```
+
+Migrate to domain-based once 3+ domains emerge (typically within 2-4 weeks).
 
 ## Edit Rules
 
@@ -198,21 +277,15 @@ tokens: ~500
 purpose: Quick navigation, pointers to Tier 2
 ```
 
-### Tier 2 (docs/llm/) - By Document Type
+### Tier 2 (docs/llm/) - By Folder Role
 
-| Path              | Max Lines | Tokens | Rationale                     |
-| ----------------- | --------- | ------ | ----------------------------- |
-| `*.md` (root)     | 200       | ~2,000 | Core reference documents      |
-| `policies/`       | 200       | ~2,000 | Core rules, frequently loaded |
-| `services/`       | 200       | ~2,000 | Per-service SSOT              |
-| `guides/`         | 150       | ~1,500 | Focused how-to, splittable    |
-| `apps/`           | 150       | ~1,500 | Per-app specification         |
-| `packages/`       | 150       | ~1,500 | Package documentation         |
-| `components/`     | 100       | ~1,000 | Single component spec         |
-| `templates/`      | 100       | ~1,000 | Small templates               |
-| `features/`       | 100       | ~1,000 | Feature specifications        |
-| `infrastructure/` | 150       | ~1,500 | Infra documentation           |
-| `references/`     | 300       | ~3,000 | External knowledge, complete  |
+| Folder Role | Max Lines | Tokens | Rationale |
+| ----------- | --------- | ------ | --------- |
+| `policies/` | 200 | ~2,000 | Core rules, frequently loaded |
+| `{domain}/` (core docs) | 200 | ~2,000 | Per-domain SSOT |
+| `{domain}/pages/` | 150 | ~1,500 | UI page specs, focused |
+| `research/` | 200 | ~2,000 | External knowledge, reference |
+| `README.md` (index) | 200 | ~2,000 | Master index with keywords |
 
 ### Tolerance (Minor Over-Limit)
 
@@ -242,14 +315,12 @@ These documents define the methodology itself and are exempt from line limits:
 
 **Minimum sizes after split:**
 
-| Document Type | Main File | Companion File | Total Before Split |
-| ------------- | --------- | -------------- | ------------------ |
-| policies/     | ≥120      | ≥60            | >200               |
-| services/     | ≥120      | ≥60            | >200               |
-| guides/       | ≥90       | ≥50            | >150               |
-| apps/         | ≥90       | ≥50            | >150               |
-| packages/     | ≥90       | ≥50            | >150               |
-| components/   | ≥60       | ≥40            | >100               |
+| Folder Role | Main File | Companion File | Total Before Split |
+| ----------- | --------- | -------------- | ------------------ |
+| `policies/` | ≥120 | ≥60 | >200 |
+| `{domain}/` (core) | ≥120 | ≥60 | >200 |
+| `{domain}/pages/` | ≥90 | ≥50 | >150 |
+| `research/` | ≥120 | ≥60 | >200 |
 
 **Split decision criteria:**
 
@@ -317,13 +388,14 @@ These documents define the methodology itself and are exempt from line limits:
 
 ## Update Requirements
 
-| Change Type        | .ai/               | docs/llm/      |
-| ------------------ | ------------------ | -------------- |
-| New component/hook | apps/ or packages/ | -              |
-| New API endpoint   | services/          | services/      |
-| New pattern        | rules.md           | -              |
-| Major feature      | relevant file      | guides/        |
-| New policy         | rules.md summary   | policies/ full |
+| Change Type | .ai/ | docs/llm/ |
+| ----------- | ---- | --------- |
+| New API endpoint | README.md (domain index) | `{domain}/` relevant file |
+| New domain | README.md (add domain) | Create `{domain}/` folder |
+| New pattern | rules.md | policies/ |
+| New policy | rules.md summary | policies/ full |
+| New UI page | README.md | `frontend/pages/` |
+| Cross-cutting change | architecture.md | policies/ + affected domains |
 
 ## AI Entry Points
 
@@ -335,8 +407,8 @@ These documents define the methodology itself and are exempt from line limits:
 ## Workflow Example
 
 ```bash
-# 1. Developer updates SSOT
-vim docs/llm/services/auth-service.md
+# 1. Developer updates domain SSOT
+vim docs/llm/auth/jwt-sessions.md
 
 # 2. Generate English docs
 pnpm docs:generate
@@ -346,21 +418,24 @@ pnpm docs:translate --locale kr
 
 # 4. Commit all changes
 git add docs/
-git commit -m "docs: update auth-service documentation"
+git commit -m "docs: update auth jwt-sessions"
 ```
 
 ## Best Practices
 
-| Practice              | Description                                    |
-| --------------------- | ---------------------------------------------- |
-| Tier 1 = Pointer only | Never put full specs in .ai/                   |
-| Tier 2 = SSOT         | Single source of truth for LLM                 |
-| Git = History         | No separate changelog files in CDD             |
-| Token efficiency      | Tables > prose, YAML > JSON                    |
-| Cross-reference       | .ai/ always links to docs/llm/                 |
-| No emoji/ASCII art    | Forbidden in Tier 1/2 (→ token-optimization.md)|
-| No deep nesting       | Max 2 nesting levels; convert to table         |
-| Static-first ordering | Fixed content before dynamic (prefix caching)  |
+| Practice | Description |
+| -------- | ----------- |
+| Domain-based folders | Group by bounded domain, not by artifact type |
+| Tier 1 = Pointer only | Never put full specs in .ai/ |
+| Tier 2 = SSOT | Single source of truth for LLM |
+| 1 file = 1 concept | Each file independently retrievable by RAG |
+| Git = History | No separate changelog files in CDD |
+| Token efficiency | Tables > prose, YAML > JSON |
+| Cross-reference | .ai/ always links to docs/llm/ |
+| No emoji/ASCII art | Forbidden in Tier 1/2 (→ token-optimization.md) |
+| No deep nesting | Max 2 nesting levels; convert to table |
+| Static-first ordering | Fixed content before dynamic (prefix caching) |
+| README index | Master index with keywords for retrieval routing |
 
 ## References
 
