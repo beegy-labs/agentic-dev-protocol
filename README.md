@@ -92,37 +92,43 @@ The script creates symlinks for all 6 policy files:
 Create `.github/workflows/update-submodule.yml`:
 
 ```yaml
-name: Update Policy Submodule
+name: Update Submodule
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   update:
+    name: Sync agentic-dev-protocol
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: develop       # your default branch
           submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update submodule
-        run: git submodule update --remote vendor/agentic-dev-protocol
-
-      - name: Commit and push if changed
+      - name: Update and push if changed
         run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add vendor/agentic-dev-protocol
-            git commit -m "chore(policy): Update agentic-dev-protocol"
-            git push
+          git submodule update --remote vendor/agentic-dev-protocol
+          if git diff --quiet; then
+            echo "No changes detected"
+            exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vendor/agentic-dev-protocol
+          git commit -m "chore(policy): sync agentic-dev-protocol submodule"
+          git push origin develop
 ```
+
+> **Note**: Change `ref: develop` and `git push origin develop` to match your project's default branch (e.g., `main`).
 
 ## Repository Structure
 
