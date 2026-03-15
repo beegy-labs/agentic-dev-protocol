@@ -72,9 +72,11 @@ File-level symlinks are used (not directory symlinks) to preserve project-specif
 
 | Symlink in project | Source in submodule |
 | ------------------ | ------------------- |
+| `docs/llm/policies/identity.md` | `vendor/.../policies/identity.md` |
 | `docs/llm/policies/cdd.md` | `vendor/.../policies/cdd.md` |
 | `docs/llm/policies/sdd.md` | `vendor/.../policies/sdd.md` |
 | `docs/llm/policies/add.md` | `vendor/.../policies/add.md` |
+| `docs/llm/policies/development-methodology.md` | `vendor/.../policies/development-methodology.md` |
 | `docs/llm/policies/token-optimization.md` | `vendor/.../policies/token-optimization.md` |
 | `docs/llm/policies/monorepo.md` | `vendor/.../policies/monorepo.md` |
 | `docs/llm/policies/agents-customization.md` | `vendor/.../policies/agents-customization.md` |
@@ -132,6 +134,10 @@ git push
 
 ```
 agentic-dev-protocol/
+├── .ai/                             # Layer 1: Machine pointers
+│   └── README.md
+├── .specs/                          # SDD: Change plan bootstrap
+│   └── README.md
 ├── docs/
 │   ├── llm/                         # Layer 2: Machine SSOT
 │   │   └── policies/
@@ -145,13 +151,12 @@ agentic-dev-protocol/
 │   │       ├── monorepo.md
 │   │       └── agents-customization.md
 │   └── en/                          # Layer 3: Human understanding (auto-generated)
+│       ├── README.md
 │       ├── cdd.md
 │       ├── sdd.md
 │       └── add.md
-├── scripts/
-│   └── setup-policy-links.sh
-└── .ai/                             # Layer 1: Machine pointers
-    └── README.md
+└── scripts/
+    └── setup-policy-links.sh
 ```
 
 ## Related Projects

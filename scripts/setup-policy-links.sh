@@ -25,7 +25,7 @@ TARGET_LLM_POLICIES="$PROJECT_ROOT/docs/llm/policies"
 TARGET_EN="$PROJECT_ROOT/docs/en"
 
 # Policy files to symlink
-POLICY_FILES="cdd.md sdd.md add.md token-optimization.md agents-customization.md monorepo.md"
+POLICY_FILES="identity.md cdd.md sdd.md add.md development-methodology.md token-optimization.md agents-customization.md monorepo.md"
 
 # Human-readable files to symlink
 EN_FILES="cdd.md sdd.md add.md"
