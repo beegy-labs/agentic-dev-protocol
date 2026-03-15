@@ -4,9 +4,30 @@
 
 ## Definition
 
-SDD is the **change planning layer** derived from CDD. It transforms requested changes into executable plans that ADD can autonomously carry out.
+SDD is the **CDD-derived change planning layer**.
+
+SDD transforms specific requests into executable plans. It is not a general roadmap document — it is a CDD-based change plan.
 
 SDD does not manage projects. SDD plans changes.
+
+## Purpose
+
+- Interpret change requests
+- Define change scope
+- Analyze impact
+- Decompose into work units
+- Define ordering and dependencies
+- Define completion criteria
+- Deliver executable plans to ADD
+
+## Questions SDD Answers
+
+- What is changing?
+- Why is it changing?
+- What is the scope boundary?
+- What is affected?
+- In what order should execution proceed?
+- When is it complete?
 
 ## Change Types
 
@@ -19,6 +40,27 @@ SDD handles all types of system change:
 | **Delete** | Remove capability | Deprecate feature, remove dead code |
 | **Migrate** | Move or transform | Database migration, API version upgrade |
 | **Improve** | Quality improvement | Performance optimization, test coverage |
+
+## Scope
+
+### SDD Contains
+
+- Change target
+- Change scope
+- Impact analysis
+- Dependencies
+- Work decomposition
+- Ordering and priorities
+- Completion criteria
+- Shared resource coordination plans (when needed)
+
+### SDD Does NOT Contain
+
+- System identity definitions (→ CDD)
+- Arbitrary creation of global invariants (→ CDD)
+- Contract creation without CDD basis (→ CDD)
+- Execution procedure details (→ ADD)
+- Approval governance details
 
 ## CDD vs SDD
 
@@ -82,9 +124,12 @@ Every SDD plan must trace back to CDD:
 1. Identify what to change (from request or roadmap)
 2. Read relevant CDD docs (domain model, constraints, contracts)
 3. Determine change type (add / change / delete / migrate / improve)
-4. Define scope against CDD boundaries
-5. Break into tasks that respect CDD invariants
-6. ADD executes tasks within CDD constraints
+4. Analyze impact on affected components
+5. Define scope against CDD boundaries
+6. Identify dependencies and ordering
+7. Define completion criteria
+8. Break into tasks that respect CDD invariants
+9. ADD executes tasks within CDD constraints
 ```
 
 ## Token Load Strategy
@@ -170,6 +215,11 @@ Add
 - Domain: `docs/llm/frontend/`
 - Constraints: `docs/llm/policies/architecture.md`
 
+## Impact Analysis
+
+- Affected components: navigation, routing, permission layer
+- Dependencies: auth module must be stable
+
 ## Period
 
 2026-01-01 ~ 2026-03-31
@@ -182,7 +232,7 @@ Add
 | P1 | Route setup | todo |
 | P2 | Permission checks | todo |
 
-## Success Criteria
+## Completion Criteria
 
 - All menu items functional
 - Permission-based visibility
@@ -221,6 +271,8 @@ Add
 | -------- | ----------- |
 | Derive from CDD | Every scope must reference CDD constraints |
 | Classify change type | Always specify add/change/delete/migrate/improve |
+| Include impact analysis | Identify affected components and dependencies |
+| Define completion criteria | Specify when the scope is done |
 | Roadmap = Planning only | Do not load during execution |
 | Scope = Approval boundary | Human approves scope, ADD executes tasks |
 | Tasks = ADD input | Write tasks as executable instructions |

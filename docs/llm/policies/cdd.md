@@ -4,19 +4,60 @@
 
 ## Definition
 
-CDD is the **Reconstructable Single Source of Truth (SSOT)** of the system.
+CDD is the **absolute SSOT** of the system and a **reconstructable system knowledge base**.
 
-### Core Property: Reconstructability
+CDD defines:
+
+- System identity
+- System boundaries
+- Functionality
+- External contracts
+- Invariants
+- Reconstruction criteria
+
+CDD does NOT define:
+
+- Schedules or roadmap management
+- Current progress or task state
+- Execution procedures
+- Approval governance
+- Task management
+
+## Purpose
+
+- Define system identity
+- Define architecture and behavioral constraints
+- Define external contracts
+- Define reconstruction criteria
+- Provide baseline for subsequent changes
+- Receive confirmed knowledge feedback from execution
+
+## Questions CDD Answers
+
+- What is this system?
+- What must be identical for it to be the same system?
+- What contracts does it provide externally?
+- What constraints must always be upheld?
+- What are the system boundaries?
+- What is required for a valid reconstruction?
+
+## Core Property: Reconstructability
 
 If all code is lost, CDD alone must allow reconstruction of an **equivalent system**.
 
-| Equivalent Means | May Differ |
-| ---------------- | ---------- |
-| Same functional capabilities | Code structure |
-| Same system boundaries | Implementation details |
-| Same domain model | Variable/function naming |
-| Same external contracts | UI design specifics |
-| Same invariants and core behavior | Internal optimizations |
+| Must Be Identical | May Differ |
+| ----------------- | ---------- |
+| Provided functionality | Internal code structure |
+| System boundaries | Function/variable/class names |
+| Domain model | Internal module decomposition |
+| External contracts | Implementation details |
+| Core state transition semantics | Framework-internal usage |
+| Auth/authz boundaries | UI presentation |
+| Data ownership | Visual design |
+| Core invariants | Non-critical optimizations |
+| Failure handling semantics | |
+
+What must be identical is the system's essence; what may differ is the implementation approach.
 
 ### Lifecycle Role
 
@@ -27,6 +68,42 @@ CDD is not a one-time design document. It must remain usable for:
 - **Modification** — understanding impact of changes
 - **Deletion** — knowing what depends on what
 - **Reconstruction** — rebuilding after loss
+
+## CDD Internal Classification
+
+CDD has 3 internal classifications:
+
+### Constitutional
+
+Normative layer of the system.
+
+| Aspect | Detail |
+| ------ | ------ |
+| Contains | Domain model, external contracts, system boundaries, core invariants, auth/authz model, shared surface definitions, reconstruction criteria |
+| Nature | Normative — violation forbidden |
+| Mutability | Cannot be changed without approval |
+| During ADD execution | Read-only in general |
+
+### Operational
+
+Non-normative knowledge accumulated through implementation.
+
+| Aspect | Detail |
+| ------ | ------ |
+| Contains | Implementation patterns, repeatedly validated practices, implementation guides, troubleshooting knowledge |
+| Nature | Advisory by default |
+| Mutability | Cannot override Constitutional; can be promoted if warranted |
+
+### Reference
+
+Derived information layer.
+
+| Aspect | Detail |
+| ------ | ------ |
+| Contains | Feature catalog, API catalog, screen/page maps, index documents |
+| Nature | Non-normative, informational |
+| Mutability | Incrementally updated after task completion |
+| Limitation | Cannot serve as sole normative basis |
 
 ## CDD vs SDD
 
@@ -45,45 +122,114 @@ CDD is not a one-time design document. It must remain usable for:
 | Domain model and boundaries | Current task details (→ SDD) |
 | System invariants and constraints | Roadmap, progress (→ SDD) |
 | External contracts (APIs, protocols) | Task history (→ SDD) |
-| Service/package structure | Execution policies (→ ADD) |
-| Coding conventions and patterns | Project management state |
+| System topology | Execution policies (→ ADD) |
+| Shared surface definitions | Project management state |
+| Auth/authz model | Schedules |
+| Service/package structure | Approval governance details |
+| Coding conventions and patterns | |
 | Security, testing, DB policies | |
-| Monorepo layout conventions | |
 
-## 4-Tier Structure
+## 4-Layer Structure
+
+CDD expresses the same system knowledge through 4 layers tailored to different consumers. Meaning must be identical across layers; only format and target audience differ.
 
 ```
 .ai/        → docs/llm/     → docs/en/    → docs/kr/
-(Pointer)     (SSOT)          (Generated)   (Translated)
+(Pointer)     (Machine SSOT)  (Human Recon)  (Translated)
 ```
 
-| Tier | Path | Purpose | Audience | Editable | Format |
-| ---- | ---- | ------- | -------- | -------- | ------ |
-| 1 | `.ai/` | Indicators | LLM | **Yes** | Tables, links, ≤50 lines |
-| 2 | `docs/llm/` | Full specs | LLM | **Yes** | YAML, tables, code blocks |
-| 3 | `docs/en/` | Human-readable | Human | Auto-gen | Prose, examples, guides |
-| 4 | `docs/kr/` | Translation | Human | Auto-gen | Same as docs/en/ |
+### Layer 1: Machine Pointer/Entry Layer
 
-## Tier Purpose Details
+| Aspect | Detail |
+| ------ | ------ |
+| Purpose | Route to correct Layer 2 docs with minimal tokens; minimize entry cost |
+| Consumers | LLM, automation systems, orchestrators, low-context entry workflows |
+| Contains | Indexes, domain pointers, read-first hints, minimal must-check rules, blocked-if signals |
+| Does NOT contain | Long explanations, detailed contracts, detailed models, detailed architecture |
+| Path | `.ai/` |
+| Editable | **Yes** |
+| Format | Tables, links, ≤50 lines |
+| Principle | Layer 1 is a machine navigation layer, not a system description |
 
-**Tier 1, 2 (LLM-facing)**:
+### Layer 2: Machine SSOT Layer
 
-- Core technical reference for system reconstruction
-- Token-efficient, high-density
-- Always up-to-date with current system state
+| Aspect | Detail |
+| ------ | ------ |
+| Purpose | Provide substantive system body for automation systems; maintain machine SSOT; support auto-execution and reconstruction |
+| Consumers | LLM, ADD, document-based reconstruction engines, automation systems |
+| Contains | Functionality, domain model, external contracts, invariants, topology, shared surfaces, system-level structural rules |
+| Path | `docs/llm/` |
+| Editable | **Yes** |
+| Format | YAML, tables, code blocks |
+| Principle | Layer 2 is the substantive CDD SSOT that automation systems read |
 
-**Tier 3, 4 (Human-facing)**:
+### Layer 3: Human Reconstruction Layer
 
-- External memory for human context switching
-- Onboarding material
-- Review and approval support
+| Aspect | Detail |
+| ------ | ------ |
+| Purpose | Enable humans to understand, reconstruct, and evolve the system |
+| Consumers | Developers, reviewers, new members, human implementers when LLM is unavailable |
+| Path | `docs/en/` |
+| Editable | Auto-generated (NOT directly editable) |
+| Format | Prose, examples, guides |
 
-### Tier 3/4 Generation Rules
+Layer 3 must enable:
 
-When generating human-readable docs (Tier 3/4) from Tier 2:
+- Onboarding
+- System understanding
+- Building an equivalent system
+- Maintenance
+- Feature addition, modification, deletion
+- Contract change response
 
-| Tier 2 Pattern | Tier 3 Output | Rationale |
-| -------------- | ------------- | --------- |
+**Layer 3 is NOT a simple summary. It is a human reconstruction document that enables humans to build and evolve an equivalent system.**
+
+### Layer 4: Translation/Localization Layer
+
+| Aspect | Detail |
+| ------ | ------ |
+| Purpose | Convey Layer 3 meaning identically in other languages |
+| Path | `docs/kr/` (or other locale) |
+| Editable | Auto-generated |
+| Principle | Only language changes; meaning must NOT change |
+
+## Layer Generation Rules
+
+### Mandatory Layers
+
+- Layer 1: **Required**
+- Layer 2: **Required**
+
+Reason: Automation systems need both a routing layer and a machine SSOT to function.
+
+### Optional Layers
+
+- Layer 3: Generate when needed
+- Layer 4: Generate when needed
+
+### Layer 3 Generation Conditions
+
+- Human fallback is needed
+- Onboarding quality matters
+- Preparing for LLM-unavailable scenarios
+- Long-term maintenance handover is considered
+
+### Layer 4 Generation Conditions
+
+- Multi-language team support is needed
+- Direct use by specific language-region developers is needed
+
+### Practical Recommendation
+
+- Important projects: Layer 3 strongly recommended
+- Multi-language operations: Layer 4 recommended
+
+## Tier 3/4 Generation Rules
+
+When generating human-readable docs (Layer 3/4) from Layer 2:
+
+| Layer 2 Pattern | Layer 3 Output | Rationale |
+| --------------- | -------------- | --------- |
 | `foo.md` + `foo-impl.md` | Single `foo.md` | Humans prefer complete context |
 | `foo.md` + `foo-testing.md` | Single `foo.md` | No token limits for humans |
 | Split companion files | Merge into main | Readability over retrieval |
@@ -96,31 +242,31 @@ When generating human-readable docs (Tier 3/4) from Tier 2:
 project/
 ├── CLAUDE.md           # Claude entry point
 ├── GEMINI.md           # Gemini entry point
-├── .ai/                # Tier 1 - EDITABLE (LLM pointers)
+├── .ai/                # Layer 1 - EDITABLE (Machine pointers)
 │   ├── README.md       # Navigation hub (domain index)
 │   ├── rules.md        # Core DO/DON'T
 │   ├── architecture.md # Architecture pointer
 │   └── git-flow.md     # Git workflow pointer
 ├── docs/
-│   ├── llm/            # Tier 2 - EDITABLE (SSOT)
+│   ├── llm/            # Layer 2 - EDITABLE (Machine SSOT)
 │   │   ├── README.md   # Master index with keywords
 │   │   ├── policies/   # Cross-cutting rules (all domains)
 │   │   ├── {domain-a}/ # Domain folder (e.g. auth/)
 │   │   ├── {domain-b}/ # Domain folder (e.g. inference/)
 │   │   └── research/   # External knowledge (by topic)
-│   ├── en/             # Tier 3 - NOT EDITABLE (Generated)
-│   └── kr/             # Tier 4 - NOT EDITABLE (Translated)
+│   ├── en/             # Layer 3 - NOT EDITABLE (Human reconstruction)
+│   └── kr/             # Layer 4 - NOT EDITABLE (Translated)
 ```
 
 ### Why Domain-Based
 
-| Criterion | Type-based (`services/`, `guides/`) | Domain-based (`auth/`, `infra/`) |
-| --------- | ----------------------------------- | -------------------------------- |
-| Retrieval precision | Low (scattered across folders) | High (scoped by domain) |
-| Token efficiency | Poor (loads cross-domain) | Good (loads single domain) |
-| Path-as-signal | Weak (type, not domain) | Strong (path = domain) |
-| Collocation | Low (5 folders for 1 domain) | High (1 folder per domain) |
-| Code alignment | None | Direct mapping to architecture |
+| Criterion | Type-based | Domain-based |
+| --------- | ---------- | ------------ |
+| Retrieval precision | Low (scattered) | High (scoped by domain) |
+| Token efficiency | Poor (cross-domain) | Good (single domain) |
+| Path-as-signal | Weak | Strong (path = domain) |
+| Collocation | Low | High (1 folder per domain) |
+| Code alignment | None | Direct mapping |
 
 ### Domain Folder Guidelines
 
@@ -131,18 +277,7 @@ project/
 | `research/` for external knowledge | Sub-organized by topic |
 | New domains = new folders | Do not force-fit into existing domains |
 
-### Internal Structure per Domain
-
-| Internal Pattern | Example Files | When to Use |
-| ---------------- | ------------- | ----------- |
-| Core + routing/ops split | `ollama.md`, `ollama-routing.md` | Complex subsystems |
-| Mechanism-per-file | `jwt-sessions.md`, `api-keys.md`, `rbac.md` | Multiple independent mechanisms |
-| Lifecycle + analytics | `job-lifecycle.md`, `job-analytics.md` | Entities with observation pipeline |
-| Deploy + platform | `deploy.md`, `deploy-helm.md` | Multi-target deployment |
-
 ### Fallback: Type-Based (Early Projects)
-
-For new projects where domains are not yet identified:
 
 ```
 docs/llm/
@@ -173,19 +308,32 @@ Migrate to domain-based once 3+ domains emerge.
 | Version tracking | Git commits |
 | No separate history files | Use Git |
 
-## CDD Update Triggers
+## CDD Update Rules
 
-CDD is updated when the system's knowledge changes, not when tasks complete.
+CDD is the input to execution and the output of learning.
+
+### By Classification
+
+| Classification | Update Rule | Approval |
+| -------------- | ----------- | -------- |
+| **Constitutional** | No arbitrary changes during execution. Only reflects system identity changes. | Required |
+| **Operational** | Reflects implementation experience after work. Accumulates validated patterns. | Not required |
+| **Reference** | Reflects results after work. Updates feature, API, screen catalogs. | Not required |
+
+Constitutional layer must be controlled. Operational and Reference layers grow through use.
+
+### Update Triggers
 
 | Trigger | CDD Action |
 | ------- | ---------- |
 | New domain boundary discovered | Add domain folder |
-| New pattern confirmed through use | Add to policies/ |
-| External contract changed | Update contract docs |
-| Invariant added or modified | Update domain docs |
-| System boundary shifted | Update architecture |
+| New pattern confirmed through use | Add to policies/ (Operational) |
+| External contract changed | Update contract docs (Constitutional — requires approval) |
+| Invariant added or modified | Update domain docs (Constitutional — requires approval) |
+| System boundary shifted | Update architecture (Constitutional — requires approval) |
+| Feature implemented | Update Reference catalog |
 
-CDD should **not** be updated as a routine task-completion checklist. Only confirmed, stable knowledge enters CDD.
+CDD should **not** be updated as a routine task-completion checklist.
 
 ## CLI Commands
 
@@ -211,27 +359,25 @@ pnpm docs:translate --locale kr --clean     # Clear history + translate all
 
 ## Line Limits (RAG Optimized)
 
-### Tier 1 (.ai/)
+### Layer 1 (.ai/)
 
 ```yaml
 max_lines: 50
 tokens: ~500
-purpose: Quick navigation, pointers to Tier 2
+purpose: Quick navigation, pointers to Layer 2
 ```
 
-### Tier 2 (docs/llm/) - By Folder Role
+### Layer 2 (docs/llm/) - By Folder Role
 
 | Folder Role | Max Lines | Tokens | Rationale |
 | ----------- | --------- | ------ | --------- |
 | `policies/` | 200 | ~2,000 | Core rules, frequently loaded |
 | `{domain}/` (core docs) | 200 | ~2,000 | Per-domain SSOT |
-| `{domain}/pages/` | 150 | ~1,500 | UI page specs, focused |
-| `research/` | 200 | ~2,000 | External knowledge, reference |
-| `README.md` (index) | 200 | ~2,000 | Master index with keywords |
+| `{domain}/pages/` | 150 | ~1,500 | UI page specs |
+| `research/` | 200 | ~2,000 | External knowledge |
+| `README.md` (index) | 200 | ~2,000 | Master index |
 
 ### Exceptions (Framework Documents)
-
-These documents define the methodology itself and are exempt from line limits:
 
 | File | Reason |
 | ---- | ------ |
@@ -260,22 +406,6 @@ These documents define the methodology itself and are exempt from line limits:
 └── Documents:        ~70k tokens (35 × 2,000 avg)
 ```
 
-### Token Optimization (Tier 1 & 2)
-
-**Full rules**: `docs/llm/policies/token-optimization.md`
-
-| Category | Forbidden | Required |
-| -------- | --------- | -------- |
-| Characters | Emoji, box-drawing chars | Plain text, ✓/✗ only |
-| Indentation | Tab chars, 4-space indent | 2-space indent, max 2 levels |
-| Structure | ≥3 nesting levels, H4+ headers | Tables, flat bullets (≤2 levels) |
-| Format | JSON configs, verbose prose | YAML configs, tables > prose |
-| Whitespace | 3+ consecutive blank lines | Max 1 blank line |
-
-### Language Policy
-
-**All CDD documents MUST be written in English.**
-
 ## AI Entry Points
 
 | AI | Entry File | First Read |
@@ -288,14 +418,14 @@ These documents define the methodology itself and are exempt from line limits:
 | Practice | Description |
 | -------- | ----------- |
 | Reconstructability first | Every CDD doc should contribute to system rebuilding |
+| Respect classification | Constitutional = normative; Operational = advisory; Reference = informational |
 | Domain-based folders | Group by bounded domain, not by artifact type |
-| Tier 1 = Pointer only | Never put full specs in .ai/ |
-| Tier 2 = SSOT | Single source of truth |
+| Layer 1 = Pointer only | Never put full specs in .ai/ |
+| Layer 2 = Machine SSOT | Substantive body for automation |
+| Layer 3 = Human reconstruction | Not just summary — must enable human system building |
 | 1 file = 1 concept | Each file independently retrievable by RAG |
 | Git = History | No separate changelog files in CDD |
-| Token efficiency | Tables > prose, YAML > JSON |
 | Stable knowledge only | Do not add transient or task-specific content |
-| Static-first ordering | Fixed content before dynamic (prefix caching) |
 
 ## References
 

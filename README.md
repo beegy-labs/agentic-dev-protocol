@@ -1,19 +1,26 @@
 # Agentic Development Protocol
 
-A **CDD-driven autonomous system delivery** methodology for software evolution.
+A **CDD-driven automated software evolution** system.
 
 ## Core Concept
 
 ```
-CDD (Knowledge) → SDD (Change Plan) → ADD (Execution) → CDD (Feedback)
+CDD → SDD → ADD → CDD (feedback loop)
 ```
 
 | Layer | Role |
 | ----- | ---- |
 | **CDD** | Reconstructable SSOT — if all code is lost, CDD enables rebuilding an equivalent system |
 | **SDD** | CDD-derived change planning — transforms requests into executable plans |
-| **ADD** | Autonomous execution engine — determines work type, selects policy, executes within CDD constraints |
+| **ADD** | Autonomous execution engine — classifies work type, selects policy/skill, executes within CDD constraints |
 | **Human** | Approval, exception handling, and final decisions only |
+
+### Key Properties
+
+- **Reconstructability**: CDD alone enables system reconstruction
+- **Dual-path guarantee**: Layer 2 for machine auto-execution, Layer 3 for human reconstruction
+- **CDD internal classification**: Constitutional (normative) / Operational (advisory) / Reference (informational)
+- **Minimal human role**: Humans approve and resolve exceptions, not operate
 
 ## Policies
 

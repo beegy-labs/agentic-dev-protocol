@@ -1,14 +1,35 @@
 # ADD (Agent-Driven Development)
 
-> Autonomous execution engine | Last Updated: 2026-03-15
+> Autonomous execution and policy selection engine | Last Updated: 2026-03-15
 
 ## Definition
 
-ADD is the **autonomous execution engine** that carries out SDD change plans within CDD constraints. ADD does not merely execute tasks — it determines work type, selects execution policy, chooses appropriate skills and toolchains, and proceeds autonomously.
+ADD is the **autonomous execution and policy selection engine**.
+
+ADD is not a simple task executor. It determines what type of work this is, selects appropriate policies and skills, and executes automatically within CDD constraints.
 
 ```
-ADD = Autonomous judgment + policy selection + execution within CDD constraints
+ADD = Work type classification + policy selection + skill selection + autonomous execution
 ```
+
+## Purpose
+
+- Classify work type
+- Select appropriate execution policy
+- Select appropriate skill / workflow / toolchain
+- Execute autonomously within CDD constraints
+- Escalate to humans only when necessary
+- Verify automatically
+- Feed confirmed knowledge back to CDD after completion
+
+## Questions ADD Answers
+
+- What type of work is this?
+- Which execution policy should apply?
+- Which skill or workflow is needed?
+- Can this be judged automatically?
+- When should a human be consulted?
+- What should be reflected in CDD after completion?
 
 ## System Position
 
@@ -30,13 +51,59 @@ SDD (Change Plan) ──tasks──→ ADD ──progress──→ SDD
 | Confirmed knowledge | CDD | Feedback loop |
 | Progress updates | SDD | Task tracking |
 
+## Work Type Classification
+
+ADD must classify each piece of work. Examples:
+
+| Work Type | Description |
+| --------- | ----------- |
+| Feature addition | New functionality |
+| Feature modification | Change existing behavior |
+| Bug fix | Correct defect |
+| Contract change | Modify external interface |
+| Refactoring | Restructure without behavior change |
+| Code quality improvement | Linting, typing, coverage |
+| Frontend work | UI/UX implementation |
+| Backend work | API/service implementation |
+| Migration | Data or schema migration |
+| Test strengthening | Add/improve tests |
+| Docs/policy update | Documentation or policy changes |
+
+## Policy Selection
+
+ADD must select the appropriate execution policy. Examples:
+
+| Policy | When Applied |
+| ------ | ------------ |
+| feature-addition | Adding new capabilities |
+| bug-fix | Correcting defects |
+| regression-safe | Changes with high regression risk |
+| migration-safe | Data or schema migrations |
+| frontend | UI/UX changes |
+| backend-contract | API contract modifications |
+| refactor | Structural changes without behavior change |
+| quality-improvement | Coverage, linting, typing improvements |
+
+## Skill Selection
+
+ADD must select the appropriate skill/workflow. Examples:
+
+| Skill | Scope |
+| ----- | ----- |
+| frontend | UI components, pages, styling |
+| backend | APIs, services, data layer |
+| migration | Schema changes, data transforms |
+| refactor | Code restructuring |
+| testing | Test creation, coverage improvement |
+| docs/policy | Documentation, policy updates |
+
 ## Autonomous Decision Process
 
 When ADD receives work, it follows this judgment sequence:
 
 ```
 1. Determine work type
-   └── What kind of change is this? (add / change / delete / migrate / improve)
+   └── What kind of change is this?
 
 2. Assess scope and risk
    └── Can this proceed autonomously, or does it require approval?
@@ -56,6 +123,27 @@ When ADD receives work, it follows this judgment sequence:
 7. Report and feedback
    └── Update SDD progress; feed confirmed knowledge to CDD
 ```
+
+## Scope
+
+### ADD Contains
+
+- Work type classification
+- Execution policy selection
+- Skill/workflow selection
+- Autonomous execution
+- Automatic verification
+- Stop/resume capability
+- Deficiency handling
+- Escalation
+- CDD feedback after completion
+
+### ADD Does NOT Contain
+
+- System identity redefinition (→ CDD)
+- Change scope definition itself (→ SDD)
+- Excessive human operational rules
+- Project governance as a primary function
 
 ## Entry Points
 
@@ -138,11 +226,13 @@ level_2_escalation:
 
 | Escalate | Do NOT Escalate |
 | -------- | --------------- |
-| Ambiguous requirement with multiple valid interpretations | Routine implementation decisions |
-| CDD constraint conflict | Standard error resolution |
-| Scope boundary unclear | Toolchain selection |
-| Security/compliance decision needed | Test failures with clear cause |
-| Irreversible action with uncertain outcome | Refactoring within established patterns |
+| System identity change | Routine implementation decisions |
+| Unresolved CDD ambiguity | Standard error resolution |
+| Policy conflict | Toolchain selection |
+| Insufficient auto-judgment confidence | Test failures with clear cause |
+| High-risk contract change | Refactoring within established patterns |
+| Scope boundary unclear | |
+| Irreversible action with uncertain outcome | |
 
 ## Human Intervention
 
@@ -153,7 +243,8 @@ When escalation occurs:
 1. Review the escalation report
 2. Identify root cause
 3. Update the appropriate layer:
-   - Missing pattern → CDD
+   - Missing pattern → CDD (Operational)
+   - Missing constraint → CDD (Constitutional — requires approval)
    - Unclear requirement → SDD
    - One-time decision → Direct guidance
 4. ADD resumes execution
@@ -162,14 +253,14 @@ When escalation occurs:
 
 After execution completes, ADD evaluates what was learned:
 
-| Condition | Action |
-| --------- | ------ |
-| New pattern confirmed through use | Update CDD policies/ |
-| New domain boundary discovered | Add CDD domain folder |
-| External contract changed | Update CDD contract docs |
-| No new stable knowledge | Archive in SDD history only |
+| CDD Classification | Condition | Action |
+| ------------------- | --------- | ------ |
+| Constitutional | System identity/boundary/contract changed | Update (requires approval) |
+| Operational | New pattern confirmed through use | Update (accumulate) |
+| Reference | Feature/API/screen catalog changed | Update (index refresh) |
+| None | No new stable knowledge | Archive in SDD history only |
 
-Only **confirmed, stable knowledge** enters CDD. Experimental or one-time solutions do not.
+Only **confirmed, stable knowledge** enters CDD.
 
 ## Verification
 
@@ -187,10 +278,11 @@ After work completion:
 | Practice | Rule |
 | -------- | ---- |
 | Autonomous first | Attempt self-resolution before escalating |
+| Classify work type | Always determine work type before execution |
+| Select policy | Choose appropriate execution policy |
 | Spec-first | Validate spec exists before implementing |
-| CDD-constrained | Never violate CDD constraints without escalation |
+| CDD-constrained | Never violate CDD Constitutional constraints without escalation |
 | Small, verifiable steps | Break work into independently verifiable chunks |
-| Classify work type | Always determine add/change/delete/migrate/improve |
 | Selective feedback | Only feed confirmed knowledge back to CDD |
 | Minimal escalation | Escalate decisions, not status updates |
 
