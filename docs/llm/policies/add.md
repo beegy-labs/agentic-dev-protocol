@@ -1,198 +1,202 @@
 # ADD (Agent-Driven Development)
 
-> Autonomous execution of SDD tasks | Last Updated: 2026-01-25
+> Autonomous execution engine | Last Updated: 2026-03-15
 
-## Core
+## Definition
 
-```
-ADD = Execute approved SDD tasks through supervised autonomy
-```
-
-**Principle**: Agents implement, humans approve.
-
-## Relationship
+ADD is the **autonomous execution engine** that carries out SDD change plans within CDD constraints. ADD does not merely execute tasks — it determines work type, selects execution policy, chooses appropriate skills and toolchains, and proceeds autonomously.
 
 ```
-CDD (HOW) --referenced--> SDD (WHAT) --executed--> ADD (DO)
-    ^                                                 |
-    +------------------ feedback ---------------------+
+ADD = Autonomous judgment + policy selection + execution within CDD constraints
 ```
 
-| Phase | Focus | Input | Output |
-|-------|-------|-------|--------|
-| CDD | Patterns | Experience | Documentation |
-| SDD | Planning | Roadmap | Specs + Tasks |
-| ADD | Execution | Approved tasks | Code + CDD updates |
+## System Position
+
+```
+CDD (SSOT) ──constraints──→ ADD ──feedback──→ CDD
+                              ↑
+SDD (Change Plan) ──tasks──→ ADD ──progress──→ SDD
+```
+
+| Input | Source | Purpose |
+| ----- | ------ | ------- |
+| Constraints, patterns, domain model | CDD | Execution boundaries |
+| Change plan, task list | SDD | What to execute |
+| Execution policies | ADD internal | How to execute |
+
+| Output | Destination | Purpose |
+| ------ | ----------- | ------- |
+| Implemented changes | Codebase | Deliverable |
+| Confirmed knowledge | CDD | Feedback loop |
+| Progress updates | SDD | Task tracking |
+
+## Autonomous Decision Process
+
+When ADD receives work, it follows this judgment sequence:
+
+```
+1. Determine work type
+   └── What kind of change is this? (add / change / delete / migrate / improve)
+
+2. Assess scope and risk
+   └── Can this proceed autonomously, or does it require approval?
+
+3. Select execution policy
+   └── Which constraints and patterns apply? (from CDD)
+
+4. Select skill / workflow / toolchain
+   └── What tools and approaches fit this work?
+
+5. Execute
+   └── Carry out the work within CDD constraints
+
+6. Verify
+   └── Tests, lint, build, contract checks
+
+7. Report and feedback
+   └── Update SDD progress; feed confirmed knowledge to CDD
+```
 
 ## Entry Points
 
 ```
-AGENTS.md -> CLAUDE.md / GEMINI.md -> .ai/workflows/
-(router)    (user creates)           (details)
+AGENTS.md → CLAUDE.md / GEMINI.md → .ai/workflows/
+(router)    (executor config)       (workflow details)
 ```
 
 | File | Purpose |
-|------|---------|
+| ---- | ------- |
 | AGENTS.md | Shared router (<50 lines) |
-| CLAUDE.md | Claude-specific (user creates) |
-| GEMINI.md | Gemini-specific (user creates) |
+| CLAUDE.md | Claude-specific config |
+| GEMINI.md | Gemini-specific config |
 
 ## Spec-First Validation
 
+Before executing, ADD validates that a spec exists:
+
 ```
-User: "Implement X"
-    |
+Request: "Implement X"
+    │
     v
-Read .specs/{app-name}/roadmap.md
-    |
+Read .specs/{app}/roadmap.md
+    │
     v
 Keyword search
-    |
-    +-> Found -> Read tasks/{scope}/ -> Implement
-    +-> Not found -> "[!] Create spec first?"
-```
-
-Response when no spec:
-```
-[!] No spec for '{keyword}'.
-1. Create spec first? (Recommended)
-2. Implement directly?
+    │
+    ├── Found → Read tasks/{scope}/ → Execute
+    └── Not found → Escalate: "No spec. Create spec first?"
 ```
 
 ## Execution Modes
 
-### Single Agent
+### Single Executor
 ```
-User -> AGENTS.md -> Agent -> Implementation
+Request → AGENTS.md → Executor → Implementation
 ```
 
-### Multi-Agent (Parallel)
+### Parallel Execution
 ```
 Orchestrator (reads tasks.md)
-    |
-    +-> Agent 1 (Task A) --\
-    +-> Agent 2 (Task B) ---+-> Merge results
-    +-> Agent 3 (Task C) --/
+    ├── Executor 1 (Task A) ──\
+    ├── Executor 2 (Task B) ───┼── Merge results
+    └── Executor 3 (Task C) ──/
 ```
 
 ### Git Worktree (Parallel Isolation)
 ```bash
 git worktree add ../project-task-a -b feat/task-a
 git worktree add ../project-task-b -b feat/task-b
-# Agents work isolated, merge when done
+# Executors work isolated, merge when done
 ```
 
-## Task Execution
+## Escalation Protocol
 
-From tasks.md:
-```
-Phase 1 (Parallel): Task A, B -> simultaneous
-Phase 2 (Sequential): Task C -> after Phase 1
-```
-
-Progress tracking:
-```
-Completed: [x] Task A, B
-In Progress: [ ] Task C
-Blocked: [ ] Task D (waiting C)
-```
-
-## Self-Resolution Protocol
+ADD operates autonomously by default. Escalation to humans occurs only when necessary.
 
 ```yaml
-step_1: Self-resolution
-  - Re-read CDD
-  - Search codebase
-  - Run tests
+level_1_self_resolution:
+  actions:
+    - Re-read relevant CDD docs
+    - Search codebase for precedents
+    - Run tests to validate assumptions
+  escalate_if: 'Cannot resolve with available information'
 
-step_2: Peer consensus (if multi-agent)
-  - condition: self-resolution fails
-
-step_3: Incident report -> Human
-  - condition: consensus fails
-  - human: Update CDD/SDD, restart agent
+level_2_escalation:
+  to: Human
+  provides:
+    - Context summary
+    - What was attempted
+    - Specific question or decision needed
+    - Options with trade-offs
+  human_responds_by:
+    - Updating CDD (missing pattern/constraint)
+    - Updating SDD (unclear requirement)
+    - Direct guidance (one-time decision)
 ```
+
+### When to Escalate
+
+| Escalate | Do NOT Escalate |
+| -------- | --------------- |
+| Ambiguous requirement with multiple valid interpretations | Routine implementation decisions |
+| CDD constraint conflict | Standard error resolution |
+| Scope boundary unclear | Toolchain selection |
+| Security/compliance decision needed | Test failures with clear cause |
+| Irreversible action with uncertain outcome | Refactoring within established patterns |
 
 ## Human Intervention
 
-**Human does NOT write code.**
+**Humans do NOT write code or manage execution.**
 
-When needed:
-1. Review incident report
+When escalation occurs:
+
+1. Review the escalation report
 2. Identify root cause
-3. Update layer:
-   - Missing pattern -> CDD
-   - Unclear requirement -> SDD
-4. Restart agents
+3. Update the appropriate layer:
+   - Missing pattern → CDD
+   - Unclear requirement → SDD
+   - One-time decision → Direct guidance
+4. ADD resumes execution
 
-## Experience Capitalization
+## CDD Feedback
 
-```
-Task done -> Update CDD T1/T2 (mandatory) -> Archive to history/
-```
+After execution completes, ADD evaluates what was learned:
 
-**Mandatory** after SDD completion:
+| Condition | Action |
+| --------- | ------ |
+| New pattern confirmed through use | Update CDD policies/ |
+| New domain boundary discovered | Add CDD domain folder |
+| External contract changed | Update CDD contract docs |
+| No new stable knowledge | Archive in SDD history only |
 
-| Tier | Action | Example |
-|------|--------|---------|
-| T1 | Add pointer to .ai/services/ | {service}.md + index.md |
-| T2 | Update SSOT in docs/llm/ | guides/, references/ |
-
-Then archive completed tasks to `.specs/{app}/history/`.
-
-## Agent Config
-
-### AGENTS.md (Shared)
-```markdown
-## Entry
-1. Read .ai/README.md
-2. Check .specs/{app-name}/roadmap.md
-
-## Rules
-- No direct commit to main
-- Check spec before implementation
-
-## Workflows
-| Action | Guide |
-|--------|-------|
-| Implement | .ai/workflows/implementation.md |
-```
-
-### CLAUDE.md (User)
-```markdown
-default: claude-sonnet-4-20250514
-complex: claude-opus-4-20250514
-```
-
-### GEMINI.md (User)
-```markdown
-default: gemini-2.0-flash
-```
+Only **confirmed, stable knowledge** enters CDD. Experimental or one-time solutions do not.
 
 ## Verification
 
-After work:
+After work completion:
+
 - [ ] Tests pass
 - [ ] Lint passes
 - [ ] Build succeeds
-- [ ] Spec tasks checked
-- [ ] Moved to completed/
-- [ ] CDD updated if new patterns
+- [ ] SDD tasks marked complete
+- [ ] CDD updated if new knowledge confirmed
+- [ ] Completed scope archived to history/
 
 ## Best Practices
 
 | Practice | Rule |
-|----------|------|
-| Spec first | Validate before implement |
-| Small steps | Verifiable chunks |
-| Update progress | Check tasks done |
-| Capitalize | Update CDD with patterns |
-| Human gates | Approval at checkpoints |
+| -------- | ---- |
+| Autonomous first | Attempt self-resolution before escalating |
+| Spec-first | Validate spec exists before implementing |
+| CDD-constrained | Never violate CDD constraints without escalation |
+| Small, verifiable steps | Break work into independently verifiable chunks |
+| Classify work type | Always determine add/change/delete/migrate/improve |
+| Selective feedback | Only feed confirmed knowledge back to CDD |
+| Minimal escalation | Escalate decisions, not status updates |
 
 ## References
 
 - CDD: `docs/llm/policies/cdd.md`
 - SDD: `docs/llm/policies/sdd.md`
-- Token Optimization: `docs/llm/policies/token-optimization.md`
-- Monorepo Structure: `docs/llm/policies/monorepo.md`
 - Methodology: `docs/llm/policies/development-methodology.md`
+- Token Optimization: `docs/llm/policies/token-optimization.md`
