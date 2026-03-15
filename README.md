@@ -154,6 +154,12 @@ agentic-dev-protocol/
     └── README.md
 ```
 
+## Related Projects
+
+| Project | Description |
+| ------- | ----------- |
+| [veronex](https://github.com/beegy-labs/veronex) | Production project |
+
 ## License
 
 MIT
