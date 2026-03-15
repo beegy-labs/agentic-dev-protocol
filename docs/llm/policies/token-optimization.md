@@ -235,6 +235,39 @@ Estimate: ~4 chars = 1 token (English).
 | Layer 2 `{domain}/pages/` | ~1,000 tokens | 1,500 |
 | Layer 2 `research/` | ~1,500 tokens | 2,000 |
 
+## Line Limits
+
+### By Layer and Folder
+
+| Layer / Folder | Max Lines | Tokens | Rationale |
+| -------------- | --------- | ------ | --------- |
+| Layer 1 (`.ai/`) | 50 | ~500 | Quick navigation, pointers to Layer 2 |
+| `policies/` | 200 | ~2,000 | Core rules, frequently loaded |
+| `{domain}/` (core docs) | 200 | ~2,000 | Per-domain SSOT |
+| `{domain}/pages/` | 150 | ~1,500 | UI page specs |
+| `research/` | 200 | ~2,000 | External knowledge |
+| `README.md` (index) | 200 | ~2,000 | Master index |
+
+### Exceptions (Framework Documents)
+
+| File | Reason |
+| ---- | ------ |
+| `policies/identity.md` | Identity anchor |
+| `policies/cdd.md` | CDD framework definition |
+| `policies/sdd.md` | SDD framework definition |
+| `policies/add.md` | ADD framework definition |
+| `policies/development-methodology.md` | Core methodology |
+
+### Split Guidelines
+
+| Condition | Action |
+| --------- | ------ |
+| Over limit by 1-10 lines | Keep as-is (tolerance) |
+| Over limit by 11-30 lines | Evaluate semantic split |
+| Over limit by >30 lines | Split required |
+| Companion would be <50 lines | Keep as-is |
+| Clear semantic boundary exists | Split |
+
 ## Prefix Caching Optimization
 
 | Rule | Detail |
@@ -263,6 +296,7 @@ Before committing Layer 1/2 docs:
 
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - CDD Policy: `docs/llm/policies/cdd.md`
 - Layer structure: `docs/llm/policies/cdd.md#4-layer-structure`
 - SDD (token load strategy): `docs/llm/policies/sdd.md#token-load-strategy`

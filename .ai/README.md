@@ -1,44 +1,43 @@
-# LLM Development Protocol
+# Agentic Development Protocol
 
-> CDD Tier 1 - Indicator (≤50 lines) | Multi-LLM Compatible
+> Layer 1 - Machine Pointer (≤50 lines) | AI-Native Organization
 
-## Tier 1 Role
+## Identity
 
-| Rule        | Description                                    |
-| ----------- | ---------------------------------------------- |
-| Max Lines   | ≤50 lines per file                             |
-| Purpose     | Quick reference, SSOT links                    |
-| Detail      | Refer to `docs/llm/policies/` (Tier 2)         |
-| Methodology | `docs/llm/policies/development-methodology.md` |
-
-## Core Methodology
-
-| Policy  | Purpose                      | SSOT                                         |
-| ------- | ---------------------------- | -------------------------------------------- |
-| CDD     | Context-Driven Development   | `docs/llm/policies/cdd.md`                   |
-| SDD     | Spec-Driven Development      | `docs/llm/policies/sdd.md`                   |
-| ADD     | Agent-Driven Development     | `docs/llm/policies/add.md`                   |
-| TOKEN   | Token Optimization Rules     | `docs/llm/policies/token-optimization.md`    |
-| MONOREPO| Backend/Frontend Structure   | `docs/llm/policies/monorepo.md`              |
-
-## Development Flow
+This methodology assumes AI-native organizations. LLM execution is the default path.
 
 ```
-CDD (HOW - Patterns) → SDD (WHAT - Tasks) → ADD (DO - Execution)
+CDD (System Memory) → SDD (Change Plan) → ADD (Auto-Execution) → CDD (Feedback)
 ```
 
-| Phase | Focus              | Output             |
-| ----- | ------------------ | ------------------ |
-| CDD   | Patterns & Context | Documentation      |
-| SDD   | Task Planning      | tasks/{scope}.md   |
-| ADD   | Execution          | Code & CDD updates |
+## Read First
 
-## Quick Links
+| Document | Purpose |
+| -------- | ------- |
+| `docs/llm/policies/identity.md` | Fixed definitions — read before any work |
+| `docs/llm/policies/development-methodology.md` | System architecture overview |
 
-| Topic       | Tier 2 SSOT                                            |
-| ----------- | ------------------------------------------------------ |
-| Methodology | `docs/llm/policies/development-methodology.md`         |
-| Details     | `docs/llm/policies/development-methodology-details.md` |
-| Monorepo    | `docs/llm/policies/monorepo.md`                        |
+## Core Policies
 
-**CDD Policy**: `docs/llm/policies/cdd.md`
+| Policy | SSOT |
+| ------ | ---- |
+| CDD | `docs/llm/policies/cdd.md` |
+| SDD | `docs/llm/policies/sdd.md` |
+| ADD | `docs/llm/policies/add.md` |
+| Token Optimization | `docs/llm/policies/token-optimization.md` |
+| Monorepo | `docs/llm/policies/monorepo.md` |
+
+## Layer Structure
+
+| Layer | Path | Purpose |
+| ----- | ---- | ------- |
+| 1 | `.ai/` | Machine pointer (this file) |
+| 2 | `docs/llm/` | Machine SSOT |
+| 3 | `docs/en/` | Human understanding (auto-generated) |
+| 4 | `docs/{locale}/` | Translation (auto-generated) |
+
+## Must-Check Before Work
+
+- Read `identity.md` for fixed definitions
+- Read relevant CDD domain docs before implementation
+- Validate spec exists before executing (spec-first)

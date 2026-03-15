@@ -4,6 +4,8 @@
 
 ## Definition
 
+> Fixed definition: `identity.md`
+
 ADD is the **autonomous execution and policy selection engine** of the AI-native organization.
 
 ADD reads change plans, classifies work types, selects appropriate policies and skills, and auto-executes within CDD constraints.
@@ -71,33 +73,37 @@ ADD must classify each piece of work:
 | Test strengthening | Add/improve tests |
 | Docs/policy update | Documentation or policy changes |
 
-## Policy Selection
+## Policy Registry
 
-ADD must select the appropriate execution policy:
+ADD selects the appropriate execution policy based on work type. Policies define constraints and patterns for each category.
 
-| Policy | When Applied |
-| ------ | ------------ |
-| feature-addition | Adding new capabilities |
-| bug-fix | Correcting defects |
-| regression-safe | Changes with high regression risk |
-| migration-safe | Data or schema migrations |
-| frontend | UI/UX changes |
-| backend-contract | API contract modifications |
-| refactor | Structural changes without behavior change |
-| quality-improvement | Coverage, linting, typing improvements |
+| Policy | When Applied | Key Constraint |
+| ------ | ------------ | -------------- |
+| `feature-addition` | Adding new capabilities | CDD basis required; spec-first |
+| `bug-fix` | Correcting defects | Regression test required |
+| `regression-safe` | Changes with high regression risk | Full test suite before merge |
+| `migration-safe` | Data or schema migrations | Rollback plan required |
+| `frontend` | UI/UX changes | Design spec reference |
+| `backend-contract` | API contract modifications | Constitutional — may require approval |
+| `refactor` | Structural changes without behavior change | No behavior change verification |
+| `quality-improvement` | Coverage, linting, typing improvements | No functional change |
 
-## Skill Selection
+> Policy details will be defined in separate files as each policy matures. Until then, this registry is the canonical list.
 
-ADD must select the appropriate skill/workflow:
+## Skill Registry
 
-| Skill | Scope |
-| ----- | ----- |
-| frontend | UI components, pages, styling |
-| backend | APIs, services, data layer |
-| migration | Schema changes, data transforms |
-| refactor | Code restructuring |
-| testing | Test creation, coverage improvement |
-| docs/policy | Documentation, policy updates |
+ADD selects the appropriate skill/workflow based on the work's technical domain.
+
+| Skill | Scope | Typical Toolchain |
+| ----- | ----- | ----------------- |
+| `frontend` | UI components, pages, styling | React, CSS, Storybook |
+| `backend` | APIs, services, data layer | NestJS, Prisma, GraphQL |
+| `migration` | Schema changes, data transforms | Prisma migrate, SQL |
+| `refactor` | Code restructuring | AST tools, IDE refactoring |
+| `testing` | Test creation, coverage improvement | Jest, Playwright |
+| `docs-policy` | Documentation, policy updates | Markdown, YAML |
+
+> Skill details will be defined in separate files as each skill matures. Until then, this registry is the canonical list.
 
 ## Autonomous Decision Process
 
@@ -235,7 +241,7 @@ level_2_escalation:
 
 ## Human Intervention
 
-**Humans do NOT write code or manage execution.**
+**Humans do NOT write code or manage execution.** For full human role definition, see `development-methodology.md#human-role`.
 
 When escalation occurs:
 
@@ -250,7 +256,7 @@ When escalation occurs:
 
 ## CDD Feedback
 
-After execution completes, ADD evaluates what was learned:
+After execution completes, ADD evaluates what was learned. For canonical CDD update rules, see `cdd.md#cdd-update-rules`.
 
 | CDD Classification | Condition | Action |
 | ------------------- | --------- | ------ |
@@ -278,7 +284,7 @@ After work completion:
 | -------- | ---- |
 | Autonomous first | Attempt self-resolution before escalating |
 | Classify work type | Always determine work type before execution |
-| Select policy | Choose appropriate execution policy |
+| Select policy | Choose appropriate execution policy from registry |
 | Spec-first | Validate spec exists before implementing |
 | CDD-constrained | Never violate Constitutional constraints without escalation |
 | Small, verifiable steps | Break work into independently verifiable chunks |
@@ -287,6 +293,7 @@ After work completion:
 
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - CDD: `docs/llm/policies/cdd.md`
 - SDD: `docs/llm/policies/sdd.md`
 - Methodology: `docs/llm/policies/development-methodology.md`

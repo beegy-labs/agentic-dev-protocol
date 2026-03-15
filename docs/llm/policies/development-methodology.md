@@ -4,6 +4,8 @@
 
 ## Identity
 
+> Fixed definitions: `identity.md`
+
 This methodology is designed for **AI-native organizations**.
 
 It is not a general-purpose development process. It is an automated software evolution system where AI executors perform implementation and humans intervene only for approval, exception handling, and final review.
@@ -30,11 +32,11 @@ This methodology is an automated development methodology designed for AI-native 
 
 ### 1. CDD-Centered Principle
 
-The center is CDD, not humans. All planning and execution reference CDD. Code is a deliverable; the system's essence is defined in CDD.
+The center is CDD, not code. All planning and execution reference CDD. Code is a deliverable; the system's essence is defined in CDD.
 
 ### 2. Reconstruction-First Principle
 
-CDD alone must enable rebuilding a system with identical functionality and system identity, even if all code is lost.
+CDD alone must enable rebuilding a system with identical functionality and system identity, even if all code is lost. For reconstruction criteria details, see `cdd.md#core-property-reconstructability`.
 
 ### 3. Change Derivation Principle
 
@@ -81,39 +83,14 @@ CDD Update (Feedback Loop)
 
 | Layer | Role | Core Property |
 | ----- | ---- | ------------- |
-| **CDD** | AI organization's system memory and reconstructable SSOT | Even without code, the system can be rebuilt |
+| **CDD** | System SSOT and reconstruction baseline | Even without code, the system can be rebuilt |
 | **SDD** | CDD-derived change planning | Every plan traces back to CDD constraints |
-| **ADD** | Autonomous judgment + execution engine | Classifies work, selects policy/skill, executes within CDD constraints |
-| **Human** | Policy approver, exception judge, final reviewer | Intervenes only when automation cannot safely proceed |
-
-## Reconstruction Principle
-
-### Must Be Identical
-
-- Provided functionality
-- System boundaries
-- Domain model
-- External contracts
-- Core state transition semantics
-- Auth/authz boundaries
-- Data ownership
-- Core invariants
-- Failure handling semantics
-
-### May Differ
-
-- Internal code structure
-- Function/variable/class names
-- Internal module decomposition
-- Implementation details
-- Framework-internal usage
-- UI presentation
-- Visual design
-- Non-critical optimizations
+| **ADD** | Autonomous execution engine | Classifies work, selects policy/skill, executes within CDD constraints |
+| **Human** | Approver, exception judge, final reviewer | Intervenes only when automation cannot safely proceed |
 
 ## Human Role
 
-Humans are the organization's **policy approvers, exception judges, and final reviewers**.
+Humans are the organization's **approvers, exception judges, and final reviewers**. For detailed escalation protocol and intervention rules, see `add.md#escalation-protocol`.
 
 | Human Does | Human Does NOT |
 | ---------- | -------------- |
@@ -156,31 +133,16 @@ Execution Complete
 
 | Component | Policy | Status |
 | --------- | ------ | ------ |
+| Identity | `docs/llm/policies/identity.md` | Active |
 | CDD | `docs/llm/policies/cdd.md` | Active |
 | SDD | `docs/llm/policies/sdd.md` | Active |
 | ADD | `docs/llm/policies/add.md` | Active |
 | Token Optimization | `docs/llm/policies/token-optimization.md` | Active |
 | Monorepo Structure | `docs/llm/policies/monorepo.md` | Active |
 
-## Final Definitions
-
-- **CDD**: AI organization's system memory and reconstructable SSOT
-- **SDD**: CDD-derived change planning layer
-- **ADD**: Work type classification, policy selection, skill selection, and autonomous execution engine
-- **Human**: Policy approver, exception judge, and final reviewer
-
-## Final Goal
-
-- CDD alone must enable system reconstruction
-- Layer 2 → ADD is the primary execution path
-- Layer 3 serves human understanding, review, audit, and onboarding
-- SDD must transform all change requests into executable plans
-- ADD must autonomously judge and execute most changes
-- Humans must be approvers and exception judges, not routine operators
-- All execution results must feed back into CDD
-
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - Full details: `development-methodology-details.md`
 - CDD Policy: `docs/llm/policies/cdd.md`
 - SDD Policy: `docs/llm/policies/sdd.md`

@@ -1,10 +1,12 @@
 # CDD (Context-Driven Development) Policy
 
-> AI organization's system memory and reconstructable SSOT | **Last Updated**: 2026-03-15
+> System SSOT and reconstruction baseline for AI-native organizations | **Last Updated**: 2026-03-15
 
 ## Definition
 
-CDD is the **system memory** of the AI-native organization and its **reconstructable Single Source of Truth (SSOT)**.
+> Fixed definition: `identity.md`
+
+CDD is the **system SSOT and reconstruction baseline** of the AI-native organization.
 
 CDD defines:
 
@@ -19,7 +21,7 @@ CDD does NOT define:
 
 - Schedules or roadmap management
 - Current progress or task state
-- Execution procedures
+- Execution procedures or CLI tooling
 - Approval governance
 - Task management
 
@@ -70,7 +72,7 @@ CDD is not a one-time design document. It must remain usable for:
 
 ## CDD Internal Classification
 
-CDD has 3 internal classifications:
+> Canonical classification: `identity.md#cdd-internal-classification`
 
 ### Constitutional
 
@@ -104,16 +106,6 @@ Derived information layer.
 | Mutability | Incrementally updated after task completion |
 | Limitation | Cannot serve as sole normative basis |
 
-## CDD vs SDD
-
-| Aspect | CDD | SDD |
-| ------ | --- | --- |
-| Purpose | What the system IS | What to CHANGE |
-| Nature | Stable knowledge base | Transient change plans |
-| Location | `.ai/`, `docs/llm/` | `.specs/` |
-| Derived from | System reality | CDD |
-| History | Git (document changes) | Files → DB (task records) |
-
 ## Scope
 
 | CDD Contains | CDD Does NOT Contain |
@@ -125,8 +117,12 @@ Derived information layer.
 | Shared surface definitions | Project management state |
 | Auth/authz model | Schedules |
 | Service/package structure | Approval governance details |
-| Coding conventions and patterns | |
-| Security, testing, DB policies | |
+| Coding conventions and patterns | CLI commands or tooling |
+| Security, testing, DB policies | Model-specific parameters |
+
+## CDD vs SDD
+
+For detailed comparison, see `sdd.md#cdd-vs-sdd`. In short: CDD defines what the system IS; SDD defines what to CHANGE.
 
 ## 4-Layer Structure
 
@@ -164,21 +160,15 @@ CDD expresses the same system knowledge through 4 layers tailored to different c
 
 ### Layer 3: Human Understanding Layer
 
+> Sufficiency checklist: `identity.md#layer-3-sufficiency-checklist`
+
 | Aspect | Detail |
 | ------ | ------ |
 | Purpose | Enable humans to understand, review, audit, and onboard into the AI organization's systems |
-| Consumers | Developers, reviewers, auditors, new members |
+| Consumers | Reviewers, auditors, new members |
 | Path | `docs/en/` |
 | Editable | Auto-generated (NOT directly editable) |
 | Format | Prose, examples, guides |
-
-Layer 3 enables:
-
-- System understanding
-- Onboarding
-- Code review context
-- Audit and compliance review
-- Architecture comprehension
 
 **Layer 3 is NOT the primary execution path.** The primary execution path is Layer 2 → ADD. Layer 3 exists for human understanding and oversight, not as an alternative execution layer.
 
@@ -202,27 +192,10 @@ Reason: ADD needs both a routing layer and a machine SSOT to function.
 
 ### Optional Layers
 
-- Layer 3: Generate when needed
-- Layer 4: Generate when needed
+- Layer 3: Generate when needed (onboarding, review, audit, compliance)
+- Layer 4: Generate when needed (multi-language team support)
 
-### Layer 3 Generation Conditions
-
-- Human onboarding quality matters
-- Code review or audit context needed
-- Compliance or governance review required
-- Architecture documentation for human stakeholders
-
-### Layer 4 Generation Conditions
-
-- Multi-language team support needed
-- Specific language-region stakeholder access needed
-
-### Practical Recommendation
-
-- Important projects: Layer 3 strongly recommended
-- Multi-language operations: Layer 4 recommended
-
-## Layer 3/4 Generation Rules
+### Layer 3/4 Generation Rules
 
 When generating human-readable docs (Layer 3/4) from Layer 2:
 
@@ -265,15 +238,6 @@ project/
 | Path-as-signal | Weak | Strong (path = domain) |
 | Collocation | Low | High (1 folder per domain) |
 | Code alignment | None | Direct mapping |
-
-### Domain Folder Guidelines
-
-| Guideline | Detail |
-| --------- | ------ |
-| One folder per bounded domain | `auth/`, `billing/`, `infra/`, `frontend/` |
-| `policies/` is always cross-cutting | Architecture, patterns, git-flow, terminology |
-| `research/` for external knowledge | Sub-organized by topic |
-| New domains = new folders | Do not force-fit into existing domains |
 
 ### Fallback: Type-Based (Early Projects)
 
@@ -331,84 +295,6 @@ CDD is the input to execution and the output of learning.
 
 CDD should **not** be updated as a routine task-completion checklist.
 
-## CLI Commands
-
-### docs:generate (docs/llm → docs/en)
-
-```bash
-pnpm docs:generate                    # Generate all (incremental)
-pnpm docs:generate --force            # Regenerate all files
-pnpm docs:generate --file <path>      # Generate specific file
-pnpm docs:generate --retry-failed     # Retry only failed files
-pnpm docs:generate --clean            # Clear history + generate all
-pnpm docs:generate --provider gemini  # Use Gemini provider
-```
-
-### docs:translate (docs/en → docs/kr)
-
-```bash
-pnpm docs:translate --locale kr             # Translate all
-pnpm docs:translate --locale kr --file <p>  # Translate specific file
-pnpm docs:translate --locale kr --retry-failed  # Retry failed only
-pnpm docs:translate --locale kr --clean     # Clear history + translate all
-```
-
-## Line Limits (RAG Optimized)
-
-### Layer 1 (.ai/)
-
-```yaml
-max_lines: 50
-tokens: ~500
-purpose: Quick navigation, pointers to Layer 2
-```
-
-### Layer 2 (docs/llm/) - By Folder Role
-
-| Folder Role | Max Lines | Tokens | Rationale |
-| ----------- | --------- | ------ | --------- |
-| `policies/` | 200 | ~2,000 | Core rules, frequently loaded |
-| `{domain}/` (core docs) | 200 | ~2,000 | Per-domain SSOT |
-| `{domain}/pages/` | 150 | ~1,500 | UI page specs |
-| `research/` | 200 | ~2,000 | External knowledge |
-| `README.md` (index) | 200 | ~2,000 | Master index |
-
-### Exceptions (Framework Documents)
-
-| File | Reason |
-| ---- | ------ |
-| `policies/cdd.md` | CDD framework definition |
-| `policies/sdd.md` | SDD framework definition |
-| `policies/add.md` | ADD framework definition |
-| `policies/development-methodology.md` | Core methodology |
-
-### Split Guidelines
-
-| Condition | Action |
-| --------- | ------ |
-| Over limit by 1-10 lines | Keep as-is (tolerance) |
-| Over limit by 11-30 lines | Evaluate semantic split |
-| Over limit by >30 lines | Split required |
-| Companion would be <50 lines | Keep as-is |
-| Clear semantic boundary exists | Split |
-
-### Context Budget (128k)
-
-```
-128k context allocation:
-├── System prompt:     ~5k tokens
-├── Conversation:     ~20k tokens
-├── Code context:     ~30k tokens
-└── Documents:        ~70k tokens (35 × 2,000 avg)
-```
-
-## AI Entry Points
-
-| AI | Entry File | First Read |
-| -- | ---------- | ---------- |
-| Claude | CLAUDE.md | .ai/rules.md |
-| Gemini | GEMINI.md | .ai/rules.md |
-
 ## Best Practices
 
 | Practice | Description |
@@ -425,8 +311,8 @@ purpose: Quick navigation, pointers to Layer 2
 
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - Methodology: `docs/llm/policies/development-methodology.md`
 - SDD Policy: `docs/llm/policies/sdd.md`
 - ADD Policy: `docs/llm/policies/add.md`
 - Token Optimization: `docs/llm/policies/token-optimization.md`
-- Monorepo Structure: `docs/llm/policies/monorepo.md`

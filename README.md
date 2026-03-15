@@ -2,45 +2,55 @@
 
 An **automated development methodology for AI-native organizations** — CDD-driven system memory, automated change planning, and autonomous execution.
 
-## Core Concept
+## Identity
 
 This methodology is designed for AI-native organizations. LLM-enabled execution is assumed, not optional.
+
+| Term | Definition |
+| ---- | ---------- |
+| **CDD** | System SSOT and reconstruction baseline |
+| **SDD** | CDD-derived change plan |
+| **ADD** | Autonomous execution and policy selection engine |
+| **Human** | Approver, exception judge, final reviewer |
+
+### Core Loop
 
 ```
 CDD (System Memory) → SDD (Change Plan) → ADD (Auto-Execution) → CDD (Feedback)
 ```
 
-| Layer | Role |
-| ----- | ---- |
-| **CDD** | AI organization's system memory and reconstructable SSOT |
-| **SDD** | CDD-derived change planning — transforms requests into executable plans |
-| **ADD** | Autonomous execution engine — classifies work, selects policy/skill, auto-executes |
-| **Human** | Policy approver, exception judge, and final reviewer |
-
 ### Key Properties
 
 - **AI-first execution**: Layer 2 → ADD is the primary execution path
 - **Reconstructability**: CDD alone enables system reconstruction
-- **CDD internal classification**: Constitutional (normative) / Operational (advisory) / Reference (informational)
+- **CDD classification**: Constitutional (normative) / Operational (advisory) / Reference (informational)
 - **Layer 3 = human understanding**: For review, audit, onboarding — not an alternative execution path
 - **Minimal human role**: Humans approve and resolve exceptions, not operate
+
+### Reading Order
+
+1. `docs/llm/policies/identity.md` — Fixed definitions
+2. `docs/llm/policies/development-methodology.md` — System architecture overview
+3. `docs/llm/policies/cdd.md` — CDD policy
+4. `docs/llm/policies/sdd.md` — SDD policy
+5. `docs/llm/policies/add.md` — ADD policy
 
 ## Policies
 
 | Policy | Purpose | File |
 | ------ | ------- | ---- |
-| **CDD** | Context-Driven Development - Reconstructable knowledge base | `docs/llm/policies/cdd.md` |
-| **SDD** | Spec-Driven Development - Change planning layer | `docs/llm/policies/sdd.md` |
-| **ADD** | Agent-Driven Development - Autonomous execution engine | `docs/llm/policies/add.md` |
+| **Identity** | Fixed definitions and identity anchor | `docs/llm/policies/identity.md` |
 | **Methodology** | System architecture overview | `docs/llm/policies/development-methodology.md` |
-| **TOKEN** | Token Optimization - Format rules for LLM-facing docs | `docs/llm/policies/token-optimization.md` |
-| **MONOREPO** | Monorepo Structure - Backend/frontend layout conventions | `docs/llm/policies/monorepo.md` |
-| **AGENTS** | AGENTS.md Customization - Project-specific additions | `docs/llm/policies/agents-customization.md` |
+| **CDD** | System SSOT and reconstruction baseline | `docs/llm/policies/cdd.md` |
+| **SDD** | CDD-derived change planning | `docs/llm/policies/sdd.md` |
+| **ADD** | Autonomous execution engine | `docs/llm/policies/add.md` |
+| **Token Optimization** | Format rules for LLM-facing docs | `docs/llm/policies/token-optimization.md` |
+| **Monorepo** | Backend/frontend layout conventions | `docs/llm/policies/monorepo.md` |
+| **Agents Customization** | Project-specific AGENTS.md additions | `docs/llm/policies/agents-customization.md` |
 
 ## Distribution
 
-This repository is the **Single Source of Truth** for development policies across all projects.
-Add it as a Git submodule and use symlinks to keep policies synchronized.
+This repository is the **Single Source of Truth** for development policies across all projects. Add it as a Git submodule and use symlinks to keep policies synchronized.
 
 ```
 agentic-dev-protocol (this repo)
@@ -59,15 +69,15 @@ agentic-dev-protocol (this repo)
 4. All target projects receive latest policies
 ```
 
-## Setup for New Projects
+### Setup for New Projects
 
-### 1. Add Submodule
+**1. Add Submodule**
 
 ```bash
 git submodule add https://github.com/beegy-labs/agentic-dev-protocol vendor/agentic-dev-protocol
 ```
 
-### 2. Create Policy Symlinks
+**2. Create Policy Symlinks**
 
 ```bash
 ./vendor/agentic-dev-protocol/scripts/setup-policy-links.sh
@@ -89,7 +99,7 @@ File-level symlinks are used (not directory symlinks) to preserve project-specif
 | `docs/en/sdd.md` | `vendor/.../docs/en/sdd.md` |
 | `docs/en/add.md` | `vendor/.../docs/en/add.md` |
 
-### 3. Add GitHub Actions Workflow
+**3. Add GitHub Actions Workflow**
 
 Create `.github/workflows/update-submodule.yml`:
 
@@ -126,13 +136,23 @@ jobs:
           fi
 ```
 
+### Manual Update
+
+```bash
+git submodule update --remote vendor/agentic-dev-protocol
+git add vendor/agentic-dev-protocol
+git commit -m "chore: Update agentic-dev-protocol"
+git push
+```
+
 ## Repository Structure
 
 ```
 agentic-dev-protocol/
 ├── docs/
-│   ├── llm/                         # Tier 2: LLM-optimized (SSOT)
+│   ├── llm/                         # Layer 2: Machine SSOT
 │   │   └── policies/
+│   │       ├── identity.md          # Identity anchor
 │   │       ├── cdd.md               # Context-Driven Development
 │   │       ├── sdd.md               # Spec-Driven Development
 │   │       ├── add.md               # Agent-Driven Development
@@ -141,32 +161,14 @@ agentic-dev-protocol/
 │   │       ├── token-optimization.md
 │   │       ├── monorepo.md
 │   │       └── agents-customization.md
-│   └── en/                          # Tier 3: Human-readable (auto-generated)
+│   └── en/                          # Layer 3: Human understanding (auto-generated)
 │       ├── cdd.md
 │       ├── sdd.md
 │       └── add.md
 ├── scripts/
 │   └── setup-policy-links.sh
-└── .ai/
+└── .ai/                             # Layer 1: Machine pointers
     └── README.md
-```
-
-## CDD 4-Tier Structure
-
-| Tier | Path | Purpose | Editable |
-| ---- | ---- | ------- | -------- |
-| 1 | `.ai/` | LLM entry point (≤50 lines) | Yes |
-| 2 | `docs/llm/` | SSOT, full specs | Yes |
-| 3 | `docs/en/` | Human-readable (auto-generated) | No |
-| 4 | `docs/{locale}/` | Translations (auto-generated) | No |
-
-## Manual Update
-
-```bash
-git submodule update --remote vendor/agentic-dev-protocol
-git add vendor/agentic-dev-protocol
-git commit -m "chore: Update agentic-dev-protocol"
-git push
 ```
 
 ## License

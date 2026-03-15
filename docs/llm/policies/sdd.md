@@ -1,10 +1,12 @@
 # SDD (Spec-Driven Development) Policy
 
-> CDD-derived change planning layer for AI-native organizations | **Last Updated**: 2026-03-15
+> CDD-derived change plan for AI-native organizations | **Last Updated**: 2026-03-15
 
 ## Definition
 
-SDD is the **CDD-derived change planning layer** of the AI-native organization.
+> Fixed definition: `identity.md`
+
+SDD is the **CDD-derived change plan** of the AI-native organization.
 
 SDD transforms specific requests into executable plans that ADD auto-executes. It is not a general roadmap document — it is a CDD-based change plan.
 
@@ -292,6 +294,7 @@ Future:  DB MCP
 
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - Methodology: `docs/llm/policies/development-methodology.md`
 - CDD Policy: `docs/llm/policies/cdd.md`
 - ADD Policy: `docs/llm/policies/add.md`
