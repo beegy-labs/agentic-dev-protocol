@@ -50,7 +50,7 @@ CDD (System Memory) → SDD (Change Plan) → ADD (Auto-Execution) → CDD (Feed
 
 ## Distribution
 
-This repository is the **Single Source of Truth** for development policies across all projects. Add it as a Git submodule and use symlinks to keep policies synchronized.
+This repository is the **Single Source of Truth** for development policies across all projects. Add it as a Git submodule and use symlinks to keep policies synchronized. Policy changes are infrequent — weekly sync with change detection is sufficient.
 
 ### Setup for New Projects
 
@@ -82,7 +82,44 @@ File-level symlinks are used (not directory symlinks) to preserve project-specif
 | `docs/en/sdd.md` | `vendor/.../docs/en/sdd.md` |
 | `docs/en/add.md` | `vendor/.../docs/en/add.md` |
 
-### Manual Update
+### Sync (Weekly, on change only)
+
+Add to target project's `.github/workflows/update-submodule.yml`:
+
+```yaml
+name: Update Policy Submodule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday 09:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Update submodule
+        run: git submodule update --remote vendor/agentic-dev-protocol
+
+      - name: Commit and push if changed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add vendor/agentic-dev-protocol
+            git commit -m "chore(policy): update agentic-dev-protocol"
+            git push
+          fi
+```
+
+Manual sync:
 
 ```bash
 git submodule update --remote vendor/agentic-dev-protocol
