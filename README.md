@@ -1,25 +1,28 @@
 # Agentic Development Protocol
 
-A **CDD-driven automated software evolution** system.
+An **automated development methodology for AI-native organizations** — CDD-driven system memory, automated change planning, and autonomous execution.
 
 ## Core Concept
 
+This methodology is designed for AI-native organizations. LLM-enabled execution is assumed, not optional.
+
 ```
-CDD → SDD → ADD → CDD (feedback loop)
+CDD (System Memory) → SDD (Change Plan) → ADD (Auto-Execution) → CDD (Feedback)
 ```
 
 | Layer | Role |
 | ----- | ---- |
-| **CDD** | Reconstructable SSOT — if all code is lost, CDD enables rebuilding an equivalent system |
+| **CDD** | AI organization's system memory and reconstructable SSOT |
 | **SDD** | CDD-derived change planning — transforms requests into executable plans |
-| **ADD** | Autonomous execution engine — classifies work type, selects policy/skill, executes within CDD constraints |
-| **Human** | Approval, exception handling, and final decisions only |
+| **ADD** | Autonomous execution engine — classifies work, selects policy/skill, auto-executes |
+| **Human** | Policy approver, exception judge, and final reviewer |
 
 ### Key Properties
 
+- **AI-first execution**: Layer 2 → ADD is the primary execution path
 - **Reconstructability**: CDD alone enables system reconstruction
-- **Dual-path guarantee**: Layer 2 for machine auto-execution, Layer 3 for human reconstruction
 - **CDD internal classification**: Constitutional (normative) / Operational (advisory) / Reference (informational)
+- **Layer 3 = human understanding**: For review, audit, onboarding — not an alternative execution path
 - **Minimal human role**: Humans approve and resolve exceptions, not operate
 
 ## Policies

@@ -1,14 +1,14 @@
 # SDD (Spec-Driven Development) Policy
 
-> CDD-derived change planning layer | **Last Updated**: 2026-03-15
+> CDD-derived change planning layer for AI-native organizations | **Last Updated**: 2026-03-15
 
 ## Definition
 
-SDD is the **CDD-derived change planning layer**.
+SDD is the **CDD-derived change planning layer** of the AI-native organization.
 
-SDD transforms specific requests into executable plans. It is not a general roadmap document — it is a CDD-based change plan.
+SDD transforms specific requests into executable plans that ADD auto-executes. It is not a general roadmap document — it is a CDD-based change plan.
 
-SDD does not manage projects. SDD plans changes.
+SDD does not manage projects. SDD plans changes for ADD.
 
 ## Purpose
 

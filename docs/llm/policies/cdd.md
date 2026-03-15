@@ -1,10 +1,10 @@
 # CDD (Context-Driven Development) Policy
 
-> Reconstructable system knowledge base | **Last Updated**: 2026-03-15
+> AI organization's system memory and reconstructable SSOT | **Last Updated**: 2026-03-15
 
 ## Definition
 
-CDD is the **absolute SSOT** of the system and a **reconstructable system knowledge base**.
+CDD is the **system memory** of the AI-native organization and its **reconstructable Single Source of Truth (SSOT)**.
 
 CDD defines:
 
@@ -31,6 +31,7 @@ CDD does NOT define:
 - Define reconstruction criteria
 - Provide baseline for subsequent changes
 - Receive confirmed knowledge feedback from execution
+- Enable human understanding, review, audit, and onboarding (via Layer 3)
 
 ## Questions CDD Answers
 
@@ -56,8 +57,6 @@ If all code is lost, CDD alone must allow reconstruction of an **equivalent syst
 | Data ownership | Visual design |
 | Core invariants | Non-critical optimizations |
 | Failure handling semantics | |
-
-What must be identical is the system's essence; what may differ is the implementation approach.
 
 ### Lifecycle Role
 
@@ -134,8 +133,8 @@ Derived information layer.
 CDD expresses the same system knowledge through 4 layers tailored to different consumers. Meaning must be identical across layers; only format and target audience differ.
 
 ```
-.ai/        → docs/llm/     → docs/en/    → docs/kr/
-(Pointer)     (Machine SSOT)  (Human Recon)  (Translated)
+.ai/        → docs/llm/     → docs/en/        → docs/kr/
+(Pointer)     (Machine SSOT)  (Human Underst.)   (Translated)
 ```
 
 ### Layer 1: Machine Pointer/Entry Layer
@@ -143,46 +142,45 @@ CDD expresses the same system knowledge through 4 layers tailored to different c
 | Aspect | Detail |
 | ------ | ------ |
 | Purpose | Route to correct Layer 2 docs with minimal tokens; minimize entry cost |
-| Consumers | LLM, automation systems, orchestrators, low-context entry workflows |
+| Consumers | LLM, ADD, orchestrators, low-context entry workflows |
 | Contains | Indexes, domain pointers, read-first hints, minimal must-check rules, blocked-if signals |
-| Does NOT contain | Long explanations, detailed contracts, detailed models, detailed architecture |
+| Does NOT contain | Long explanations, detailed contracts, detailed models |
 | Path | `.ai/` |
 | Editable | **Yes** |
 | Format | Tables, links, ≤50 lines |
-| Principle | Layer 1 is a machine navigation layer, not a system description |
+| Principle | Machine navigation layer, not a system description |
 
 ### Layer 2: Machine SSOT Layer
 
 | Aspect | Detail |
 | ------ | ------ |
-| Purpose | Provide substantive system body for automation systems; maintain machine SSOT; support auto-execution and reconstruction |
-| Consumers | LLM, ADD, document-based reconstruction engines, automation systems |
-| Contains | Functionality, domain model, external contracts, invariants, topology, shared surfaces, system-level structural rules |
+| Purpose | Substantive system body for ADD and automation; machine SSOT; support auto-execution and reconstruction |
+| Consumers | LLM, ADD, document-based reconstruction engines |
+| Contains | Functionality, domain model, external contracts, invariants, topology, shared surfaces, structural rules |
 | Path | `docs/llm/` |
 | Editable | **Yes** |
 | Format | YAML, tables, code blocks |
-| Principle | Layer 2 is the substantive CDD SSOT that automation systems read |
+| Principle | The substantive CDD SSOT. Primary execution path: Layer 2 → ADD |
 
-### Layer 3: Human Reconstruction Layer
+### Layer 3: Human Understanding Layer
 
 | Aspect | Detail |
 | ------ | ------ |
-| Purpose | Enable humans to understand, reconstruct, and evolve the system |
-| Consumers | Developers, reviewers, new members, human implementers when LLM is unavailable |
+| Purpose | Enable humans to understand, review, audit, and onboard into the AI organization's systems |
+| Consumers | Developers, reviewers, auditors, new members |
 | Path | `docs/en/` |
 | Editable | Auto-generated (NOT directly editable) |
 | Format | Prose, examples, guides |
 
-Layer 3 must enable:
+Layer 3 enables:
 
-- Onboarding
 - System understanding
-- Building an equivalent system
-- Maintenance
-- Feature addition, modification, deletion
-- Contract change response
+- Onboarding
+- Code review context
+- Audit and compliance review
+- Architecture comprehension
 
-**Layer 3 is NOT a simple summary. It is a human reconstruction document that enables humans to build and evolve an equivalent system.**
+**Layer 3 is NOT the primary execution path.** The primary execution path is Layer 2 → ADD. Layer 3 exists for human understanding and oversight, not as an alternative execution layer.
 
 ### Layer 4: Translation/Localization Layer
 
@@ -200,7 +198,7 @@ Layer 3 must enable:
 - Layer 1: **Required**
 - Layer 2: **Required**
 
-Reason: Automation systems need both a routing layer and a machine SSOT to function.
+Reason: ADD needs both a routing layer and a machine SSOT to function.
 
 ### Optional Layers
 
@@ -209,22 +207,22 @@ Reason: Automation systems need both a routing layer and a machine SSOT to funct
 
 ### Layer 3 Generation Conditions
 
-- Human fallback is needed
-- Onboarding quality matters
-- Preparing for LLM-unavailable scenarios
-- Long-term maintenance handover is considered
+- Human onboarding quality matters
+- Code review or audit context needed
+- Compliance or governance review required
+- Architecture documentation for human stakeholders
 
 ### Layer 4 Generation Conditions
 
-- Multi-language team support is needed
-- Direct use by specific language-region developers is needed
+- Multi-language team support needed
+- Specific language-region stakeholder access needed
 
 ### Practical Recommendation
 
 - Important projects: Layer 3 strongly recommended
 - Multi-language operations: Layer 4 recommended
 
-## Tier 3/4 Generation Rules
+## Layer 3/4 Generation Rules
 
 When generating human-readable docs (Layer 3/4) from Layer 2:
 
@@ -254,7 +252,7 @@ project/
 │   │   ├── {domain-a}/ # Domain folder (e.g. auth/)
 │   │   ├── {domain-b}/ # Domain folder (e.g. inference/)
 │   │   └── research/   # External knowledge (by topic)
-│   ├── en/             # Layer 3 - NOT EDITABLE (Human reconstruction)
+│   ├── en/             # Layer 3 - NOT EDITABLE (Human understanding)
 │   └── kr/             # Layer 4 - NOT EDITABLE (Translated)
 ```
 
@@ -319,8 +317,6 @@ CDD is the input to execution and the output of learning.
 | **Constitutional** | No arbitrary changes during execution. Only reflects system identity changes. | Required |
 | **Operational** | Reflects implementation experience after work. Accumulates validated patterns. | Not required |
 | **Reference** | Reflects results after work. Updates feature, API, screen catalogs. | Not required |
-
-Constitutional layer must be controlled. Operational and Reference layers grow through use.
 
 ### Update Triggers
 
@@ -419,12 +415,12 @@ purpose: Quick navigation, pointers to Layer 2
 | -------- | ----------- |
 | Reconstructability first | Every CDD doc should contribute to system rebuilding |
 | Respect classification | Constitutional = normative; Operational = advisory; Reference = informational |
-| Domain-based folders | Group by bounded domain, not by artifact type |
+| Domain-based folders | Group by bounded domain |
 | Layer 1 = Pointer only | Never put full specs in .ai/ |
-| Layer 2 = Machine SSOT | Substantive body for automation |
-| Layer 3 = Human reconstruction | Not just summary — must enable human system building |
-| 1 file = 1 concept | Each file independently retrievable by RAG |
-| Git = History | No separate changelog files in CDD |
+| Layer 2 = Machine SSOT | Primary execution path: Layer 2 → ADD |
+| Layer 3 = Human understanding | For review, audit, onboarding — not alternative execution |
+| 1 file = 1 concept | Each file independently retrievable |
+| Git = History | No separate changelog files |
 | Stable knowledge only | Do not add transient or task-specific content |
 
 ## References

@@ -1,16 +1,18 @@
 # ADD (Agent-Driven Development)
 
-> Autonomous execution and policy selection engine | Last Updated: 2026-03-15
+> Autonomous execution and policy selection engine for AI-native organizations | Last Updated: 2026-03-15
 
 ## Definition
 
-ADD is the **autonomous execution and policy selection engine**.
+ADD is the **autonomous execution and policy selection engine** of the AI-native organization.
 
-ADD is not a simple task executor. It determines what type of work this is, selects appropriate policies and skills, and executes automatically within CDD constraints.
+ADD reads change plans, classifies work types, selects appropriate policies and skills, and auto-executes within CDD constraints.
 
 ```
 ADD = Work type classification + policy selection + skill selection + autonomous execution
 ```
+
+The primary execution path is **Layer 2 → ADD**. This is not optional — it is the default operating mode.
 
 ## Purpose
 
@@ -34,9 +36,9 @@ ADD = Work type classification + policy selection + skill selection + autonomous
 ## System Position
 
 ```
-CDD (SSOT) ──constraints──→ ADD ──feedback──→ CDD
-                              ↑
-SDD (Change Plan) ──tasks──→ ADD ──progress──→ SDD
+CDD (System Memory) ──constraints──→ ADD ──feedback──→ CDD
+                                      ↑
+SDD (Change Plan) ──────tasks──────→ ADD ──progress──→ SDD
 ```
 
 | Input | Source | Purpose |
@@ -53,7 +55,7 @@ SDD (Change Plan) ──tasks──→ ADD ──progress──→ SDD
 
 ## Work Type Classification
 
-ADD must classify each piece of work. Examples:
+ADD must classify each piece of work:
 
 | Work Type | Description |
 | --------- | ----------- |
@@ -71,7 +73,7 @@ ADD must classify each piece of work. Examples:
 
 ## Policy Selection
 
-ADD must select the appropriate execution policy. Examples:
+ADD must select the appropriate execution policy:
 
 | Policy | When Applied |
 | ------ | ------------ |
@@ -86,7 +88,7 @@ ADD must select the appropriate execution policy. Examples:
 
 ## Skill Selection
 
-ADD must select the appropriate skill/workflow. Examples:
+ADD must select the appropriate skill/workflow:
 
 | Skill | Scope |
 | ----- | ----- |
@@ -98,8 +100,6 @@ ADD must select the appropriate skill/workflow. Examples:
 | docs/policy | Documentation, policy updates |
 
 ## Autonomous Decision Process
-
-When ADD receives work, it follows this judgment sequence:
 
 ```
 1. Determine work type
@@ -194,7 +194,6 @@ Orchestrator (reads tasks.md)
 ```bash
 git worktree add ../project-task-a -b feat/task-a
 git worktree add ../project-task-b -b feat/task-b
-# Executors work isolated, merge when done
 ```
 
 ## Escalation Protocol
@@ -281,7 +280,7 @@ After work completion:
 | Classify work type | Always determine work type before execution |
 | Select policy | Choose appropriate execution policy |
 | Spec-first | Validate spec exists before implementing |
-| CDD-constrained | Never violate CDD Constitutional constraints without escalation |
+| CDD-constrained | Never violate Constitutional constraints without escalation |
 | Small, verifiable steps | Break work into independently verifiable chunks |
 | Selective feedback | Only feed confirmed knowledge back to CDD |
 | Minimal escalation | Escalate decisions, not status updates |
