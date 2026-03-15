@@ -143,6 +143,8 @@ Phase 2c: Architect integrates CDD proposals + resolves conflicts → Constituti
 
 ## Governance
 
+**Governance does not redefine** CDD/SDD/ADD content. It only controls approval, audit, and notification.
+
 ### Approval Matrix
 
 | Change Level | Scope | Approval Authority | Notification |
@@ -164,18 +166,37 @@ Phase 2c: Architect integrates CDD proposals + resolves conflicts → Constituti
 | Auth model, deployment model, tech stack changes | `global` |
 | Global invariant changes | `global` |
 
-### Reconstruction Audit (Periodic)
+### Periodic Audits
 
-Quality validation of CDD completeness, separate from task-level verification (which is ADD's responsibility):
+Three audits run at milestone completion (or periodically, project decides frequency). Keep lightweight — flag issues, do not rewrite.
+
+**Boundary Audit** — Did recent changes land in the correct layer?
+
+| Check | Question |
+|---|---|
+| CDD purity | Did any schedule, scope, or execution procedure leak into CDD? |
+| SDD purity | Did any system truth, invariant, or architecture leak into SDD? |
+| ADD purity | Did any system scope, contract, or task plan leak into ADD? |
+| Governance purity | Did governance redefine CDD/SDD/ADD content instead of controlling approval? |
+
+**Parallel Audit** — Were shared surface rules followed?
+
+| Check | Question |
+|---|---|
+| Claims | Were all shared surface modifications preceded by a claim? |
+| Conflicts | Were concurrent claim conflicts resolved via Domain Owner or Architect? |
+| Migrations | Did schema migrations follow the migration queue sequence? |
+| Contracts | Were contract-first rules followed for cross-scope dependencies? |
+
+**Drift Audit** — Does CDD Constitutional match reality?
 
 | Check | Question |
 |---|---|
 | Machine reconstruction | Can a new executor reconstruct core system from Tier 2 alone? |
 | Human reconstruction | Can a developer onboard + implement from Tier 3 alone? |
-| Drift detection | Does CDD Constitutional still match the actual system? |
+| Constitutional accuracy | Does CDD Constitutional still match the actual implemented system? |
 | Coverage | Are all required 3-axis categories filled or marked N/A? |
-
-**Cadence:** On milestone completion, or periodically (project decides frequency).
+| Operational creep | Has any Operational content become de facto binding without promotion? |
 
 ### Change Notification Rules
 

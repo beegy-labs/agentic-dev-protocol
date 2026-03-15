@@ -6,6 +6,8 @@
 
 CDD is a **System Reconstruction Constitution**. All code may be lost, but CDD alone must enable reconstruction of the same system. CDD defines the persistent identity, constraints, and accumulated knowledge of a system.
 
+**CDD does not define** schedule, scope, execution procedure, or approval rules.
+
 ## CDD / SDD / ADD Separation
 
 | | CDD | SDD | ADD |
@@ -24,6 +26,23 @@ When unsure where content belongs, apply in order:
 | 1 | Still valid after scope completes? | CDD | SDD |
 | 2 | Referenced by multiple scopes? | CDD | SDD |
 | 3 | Needed to rebuild system without code? | CDD | SDD or unnecessary |
+
+### Boundary Judgment Examples
+
+| Scenario | Layer | Classification | Reasoning |
+|---|---|---|---|
+| New API parameter added to existing endpoint | CDD | Constitutional (API Contract) | External contract change; persists after scope |
+| New API parameter is internal-only (between own services) | CDD | Constitutional (Shared Contract) if cross-domain; IMPL_DETAIL if same domain | Cross-domain contract = Constitutional |
+| Shared package internal refactoring (no interface change) | SDD | No claim needed | No external contract change; internal module split = IMPL_DETAIL |
+| Shared package interface change | SDD | Claim required | Shared Surface; consumers must be notified |
+| Auth domain adds token rotation policy | CDD | Constitutional, domain-local | Invariant change but closes within auth domain |
+| Auth domain changes JWT → session-based auth | CDD | Constitutional, global | Auth model change affects all domains |
+| Test fixture used only by one domain | SDD | No claim needed | Not a shared surface |
+| Test fixture shared across domains | SDD | Claim required | Shared surface; domain-separated by default |
+| New helper function in service layer | Neither | IMPL_DETAIL | Internal implementation; no CDD basis needed |
+| New domain entity (e.g., Invoice) | CDD | Constitutional (Domain Model) | Permanent system identity |
+| Error retry count changed from 3 to 5 | Depends | Constitutional if SLA/invariant defines it; IMPL_DETAIL otherwise | Check if Failure Handling invariant specifies retry policy |
+| Logging format changed | Depends | Constitutional if Observability invariant defines format; Operational otherwise | Check if format is in Constitutional invariants |
 
 ## CDD Internal Structure
 
@@ -50,6 +69,9 @@ Accumulated implementation experience. **Non-authoritative by default.**
 - Operational guidance does not override Constitutional rules
 - Operational content becomes binding only through explicit promotion
 - Writable during and after execution
+- Operational citation alone cannot block implementation
+- Constitutional basis cannot be replaced by Operational reference
+- Unpromoted Operational is a review opinion, not policy
 
 ### Reference
 
@@ -58,6 +80,7 @@ Derived, cumulative artifacts. **Non-normative.**
 - Reference is derivative, informational, and non-normative
 - Reference cannot be used as constitutional justification
 - Reference incompleteness does not block scope creation or implementation unless a Constitutional rule explicitly requires it
+- Reference absence alone cannot block scope creation
 - Updated automatically as scopes complete
 
 ## Required Content Categories (3-Axis Template)

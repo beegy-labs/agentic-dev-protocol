@@ -8,6 +8,8 @@ ADD defines **how to execute** approved SDD tasks. It governs execution procedur
 
 **Principle**: Executors implement, architects approve.
 
+**ADD does not define** system scope, contracts, architectural decisions, or task planning.
+
 ## CDD / SDD / ADD Separation
 
 | | CDD | SDD | ADD |

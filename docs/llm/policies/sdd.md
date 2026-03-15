@@ -6,6 +6,8 @@
 
 SDD defines **what to build, when, and in what order**. It is the temporal planning layer that decomposes CDD's permanent system definition into time-bound scopes and tasks.
 
+**SDD does not define** system truth, invariants, global architecture, or execution procedures.
+
 ## CDD / SDD / ADD Separation
 
 | | CDD | SDD | ADD |
@@ -142,6 +144,38 @@ Shared surfaces are defined in CDD Constitutional. SDD manages **how** they are 
 - Claims are declared in SDD task items
 - Concurrent claim conflict → escalate to approval authority (Domain Owner or Architect)
 - Modifying shared surface without claim is prohibited
+
+**Ownership rules:**
+- Each shared surface has exactly one owner domain (registered in CDD)
+- Owner domain may modify freely; consumer domains must claim
+- Ownership transfer requires Architect approval (constitutional change)
+
+**Claim lifecycle:**
+
+| Phase | Rule |
+|---|---|
+| Acquire | Declare claim in SDD task before starting work |
+| Timeout | Claims expire when the owning task completes or is abandoned |
+| Release | Explicit release in task completion or scope archive |
+| Conflict | First claim wins; second claim must wait or escalate |
+| Escalation | Domain Owner resolves within-domain; Architect resolves cross-domain |
+
+**Migration queue rules (Shared Schema):**
+- Each migration gets a monotonic sequence number
+- Only one executor writes to migration queue at a time
+- Executor must claim the queue, apply migration, release
+- Conflicting schema changes → Architect resolves ordering
+
+**Contract-first rules (Shared Contracts):**
+- Provider publishes contract (interface only, no implementation) before consumer starts
+- Consumer may begin work once contract is committed to branch
+- Contract changes after consumer starts require cross-domain escalation
+- Contract must include: endpoint, input/output shape, error format
+
+**Cross-scope dependency blocking:**
+- `sequential` strategy: consumer scope is blocked until dependency scope completes
+- `contract-first` strategy: consumer is blocked only until contract commit, not full implementation
+- `parallel-merge` strategy: no blocking; integration test at merge point
 
 ## File Roles (Token Optimization)
 
