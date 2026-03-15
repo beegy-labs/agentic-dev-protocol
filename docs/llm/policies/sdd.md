@@ -1,19 +1,79 @@
-# Spec-Driven Development (SDD) Policy
+# SDD (Spec-Driven Development) Policy
 
-> Task planning and tracking system | **Last Updated**: 2026-01-22
+> CDD-derived change plan for AI-native organizations | **Last Updated**: 2026-03-15
 
 ## Definition
 
-SDD is a system where Human designs plans with LLM and tracks task execution. Specifications define what to build, while CDD provides how to build.
+> Fixed definition: `identity.md`
+
+SDD is the **CDD-derived change plan** of the AI-native organization.
+
+SDD transforms specific requests into executable plans that ADD auto-executes. It is not a general roadmap document — it is a CDD-based change plan.
+
+SDD does not manage projects. SDD plans changes for ADD.
+
+## Purpose
+
+- Interpret change requests
+- Define change scope
+- Analyze impact
+- Decompose into work units
+- Define ordering and dependencies
+- Define completion criteria
+- Deliver executable plans to ADD
+
+## Questions SDD Answers
+
+- What is changing?
+- Why is it changing?
+- What is the scope boundary?
+- What is affected?
+- In what order should execution proceed?
+- When is it complete?
+
+## Change Types
+
+SDD handles all types of system change:
+
+| Change Type | Description | Example |
+| ----------- | ----------- | ------- |
+| **Add** | New capability | New API endpoint, new domain |
+| **Change** | Modify existing behavior | Update business rule, refactor |
+| **Delete** | Remove capability | Deprecate feature, remove dead code |
+| **Migrate** | Move or transform | Database migration, API version upgrade |
+| **Improve** | Quality improvement | Performance optimization, test coverage |
+
+## Scope
+
+### SDD Contains
+
+- Change target
+- Change scope
+- Impact analysis
+- Dependencies
+- Work decomposition
+- Ordering and priorities
+- Completion criteria
+- Shared resource coordination plans (when needed)
+
+### SDD Does NOT Contain
+
+- System identity definitions (→ CDD)
+- Arbitrary creation of global invariants (→ CDD)
+- Contract creation without CDD basis (→ CDD)
+- Execution procedure details (→ ADD)
+- Approval governance details
 
 ## CDD vs SDD
 
-| Aspect     | CDD                     | SDD                       |
-| ---------- | ----------------------- | ------------------------- |
-| Focus      | How (context, patterns) | What (task, spec)         |
-| Location   | `.ai/`, `docs/llm/`     | `.specs/`                 |
-| History    | Git (document changes)  | Files → DB (task records) |
-| Human Role | None                    | Direction, Approval       |
+| Aspect | CDD | SDD |
+| ------ | --- | --- |
+| Purpose | What the system IS | What to CHANGE |
+| Nature | Stable knowledge base | Transient change plans |
+| Derived from | System reality | CDD |
+| Location | `.ai/`, `docs/llm/` | `.specs/` |
+| History | Git | Files → DB |
+| Lifecycle | Persistent | Created → Executed → Archived |
 
 ## Directory Structure
 
@@ -21,75 +81,67 @@ SDD is a system where Human designs plans with LLM and tracks task execution. Sp
 .specs/
 ├── README.md
 └── apps/{app}/
-    ├── {feature}.md              # Spec (What to build)
+    ├── {feature}.md              # Feature spec (what to build/change)
     │
-    ├── roadmap.md                # L1: Master roadmap (overall direction)
-    │                             # - Load only during planning sessions
+    ├── roadmap.md                # L1: Direction (load on planning only)
     │
-    ├── scopes/                   # L2: Active scopes (concurrent work support)
-    │   ├── 2026-Q1.md           # Scope A (Person A)
-    │   └── 2026-Q2.md           # Scope B (Person B)
+    ├── scopes/                   # L2: Active change scopes
+    │   ├── 2026-Q1.md           # Scope A
+    │   └── 2026-Q2.md           # Scope B
     │
-    ├── tasks/                    # L3: Scope-specific tasks
+    ├── tasks/                    # L3: Executable task lists
     │   ├── 2026-Q1.md           # Tasks for Scope A
     │   └── 2026-Q2.md           # Tasks for Scope B
     │
     └── history/
         ├── scopes/               # Completed scope archives
-        │   └── 2025-Q4.md       # Scope + tasks combined record
-        │
-        └── decisions/            # Roadmap decision records
-            └── {date}-{decision}.md
+        └── decisions/            # Decision records
 ```
 
 ## 3-Layer Work Structure
 
-| Layer          | File                | Owner     | Human Role         |
-| -------------- | ------------------- | --------- | ------------------ |
-| **L1 Roadmap** | `roadmap.md`        | Human     | Direction (Master) |
-| **L2 Scope**   | `scopes/{scope}.md` | Human+LLM | **Approval**       |
-| **L3 Tasks**   | `tasks/{scope}.md`  | LLM       | Autonomous         |
+| Layer | File | Purpose | Human Involvement |
+| ----- | ---- | ------- | ----------------- |
+| **L1 Roadmap** | `roadmap.md` | Direction and priorities | Human sets direction |
+| **L2 Scope** | `scopes/{scope}.md` | Change scope definition | Human approves scope |
+| **L3 Tasks** | `tasks/{scope}.md` | Executable task breakdown | Autonomous (ADD executes) |
 
-## File Roles (Token Optimization)
+### How Layers Flow
 
-| File                 | Content              | Token Strategy          |
-| -------------------- | -------------------- | ----------------------- |
-| `roadmap.md`         | Master roadmap (all) | **Planning only** load  |
-| `scopes/{scope}.md`  | Current work scope   | Load at work start      |
-| `tasks/{scope}.md`   | Detailed tasks       | Always load during work |
-| `history/scopes/`    | Completed scopes     | **Skip during work**    |
-| `history/decisions/` | Decision records     | Load only when needed   |
+```
+L1: roadmap.md (What needs to change and why)
+    ↓ Select scope
+L2: scopes/{scope}.md (Define change boundary — requires approval)
+    ↓ Break into tasks
+L3: tasks/{scope}.md (ADD executes autonomously)
+    ↓ Complete
+Archive → CDD update if new knowledge confirmed
+```
 
-## Multi-Scope: Concurrent Work Support
+## Change Plan Derivation
 
-```yaml
-scenario:
-  person_a: 'Q1 - Menu structure'
-  person_b: 'Q2 - Dashboard'
+Every SDD plan must trace back to CDD:
 
-files:
-  person_a:
-    load: ['scopes/2026-Q1.md', 'tasks/2026-Q1.md']
-    skip: ['roadmap.md', 'scopes/2026-Q2.md', 'tasks/2026-Q2.md', 'history/*']
-
-  person_b:
-    load: ['scopes/2026-Q2.md', 'tasks/2026-Q2.md']
-    skip: ['roadmap.md', 'scopes/2026-Q1.md', 'tasks/2026-Q1.md', 'history/*']
-
-benefit:
-  - 'No Git conflicts'
-  - 'Same token count (2 files)'
-  - 'Independent progress'
+```
+1. Identify what to change (from request or roadmap)
+2. Read relevant CDD docs (domain model, constraints, contracts)
+3. Determine change type (add / change / delete / migrate / improve)
+4. Analyze impact on affected components
+5. Define scope against CDD boundaries
+6. Identify dependencies and ordering
+7. Define completion criteria
+8. Break into tasks that respect CDD invariants
+9. ADD executes tasks within CDD constraints
 ```
 
 ## Token Load Strategy
 
-| Situation       | Load                                    | Skip                                    |
-| --------------- | --------------------------------------- | --------------------------------------- |
-| **Planning**    | `roadmap.md`                            | `scopes/*`, `tasks/*`, `history/*`      |
-| **Work Start**  | `scopes/{scope}.md`, `tasks/{scope}.md` | `roadmap.md`, other scopes, `history/*` |
-| **Continue**    | `tasks/{scope}.md`                      | Everything else                         |
-| **Review Done** | `history/scopes/{scope}.md`             | Active files                            |
+| Situation | Load | Skip |
+| --------- | ---- | ---- |
+| **Planning** | `roadmap.md` | `scopes/*`, `tasks/*`, `history/*` |
+| **Work Start** | `scopes/{scope}.md`, `tasks/{scope}.md` | `roadmap.md`, other scopes, `history/*` |
+| **Continue** | `tasks/{scope}.md` | Everything else |
+| **Review** | `history/scopes/{scope}.md` | Active files |
 
 ## Scope ID Format
 
@@ -97,43 +149,30 @@ benefit:
 {year}-{period}
 ```
 
-| Component | Description   | Example              |
-| --------- | ------------- | -------------------- |
-| year      | Year          | `2026`               |
-| period    | Quarter/Phase | `Q1`, `Q2`, `Phase1` |
-| Full ID   | Combined      | `2026-Q1`            |
-
-## Workflow
-
-```
-L1: roadmap.md (Master direction)
-    ↓ Architect selects scope
-L2: scopes/{scope}.md (Human approval)
-    ↓ LLM details
-L3: tasks/{scope}.md (LLM execution)
-    ↓ Complete
-history/scopes/{scope}.md (Archive)
-    ↓
-Post-Task: CDD Update
-```
+| Component | Example |
+| --------- | ------- |
+| year | `2026` |
+| period | `Q1`, `Q2`, `Phase1` |
+| Full ID | `2026-Q1` |
 
 ## Scope Lifecycle
 
 ```yaml
 create:
-  trigger: 'Architect selects range from roadmap'
+  trigger: 'Change request identified against CDD'
   action: 'Create scopes/{scope}.md + tasks/{scope}.md'
+  requires: 'Human approval of scope boundary'
 
 active:
-  work: 'LLM implements tasks'
-  update: 'Progress tracked in tasks/{scope}.md'
+  executor: 'ADD (autonomous)'
+  tracking: 'Progress in tasks/{scope}.md'
 
 complete:
   trigger: 'All tasks done'
   action:
     - 'Merge scope + tasks → history/scopes/{scope}.md'
     - 'Delete active files'
-    - 'Update CDD if patterns found'
+    - 'Feed confirmed knowledge back to CDD'
 ```
 
 ## File Templates
@@ -143,19 +182,19 @@ complete:
 ```markdown
 # Roadmap
 
-> L1: Master direction | Load on planning only
+> L1: Direction | Load on planning only
 
 ## 2026
 
-| Q   | Priority | Feature        | Status              |
-| --- | -------- | -------------- | ------------------- |
-| Q1  | P0       | Menu structure | → scopes/2026-Q1.md |
-| Q2  | P0       | Dashboard      | Pending             |
-| Q3  | P0       | Audit center   | Pending             |
+| Q | Priority | Change | Type | Status |
+| - | -------- | ------ | ---- | ------ |
+| Q1 | P0 | Menu structure | Add | → scopes/2026-Q1.md |
+| Q2 | P0 | Dashboard | Add | Pending |
+| Q3 | P1 | Auth refactor | Migrate | Pending |
 
 ## Dependencies
 
-- Menu → Dashboard → Audit
+- Menu → Dashboard → Auth refactor
 ```
 
 ### scopes/{scope}.md (L2)
@@ -163,11 +202,25 @@ complete:
 ```markdown
 # Scope: 2026-Q1
 
-> L2: Human approval required | Extracted from roadmap
+> L2: Requires approval | Derived from roadmap
 
-## Target
+## Change Summary
 
 Menu structure implementation
+
+## Change Type
+
+Add
+
+## CDD References
+
+- Domain: `docs/llm/frontend/`
+- Constraints: `docs/llm/policies/architecture.md`
+
+## Impact Analysis
+
+- Affected components: navigation, routing, permission layer
+- Dependencies: auth module must be stable
 
 ## Period
 
@@ -175,13 +228,13 @@ Menu structure implementation
 
 ## Items
 
-| Priority | Feature           | Status |
-| -------- | ----------------- | ------ |
-| P0       | Menu config       | todo   |
-| P1       | Route setup       | todo   |
-| P2       | Permission checks | todo   |
+| Priority | Feature | Status |
+| -------- | ------- | ------ |
+| P0 | Menu config | todo |
+| P1 | Route setup | todo |
+| P2 | Permission checks | todo |
 
-## Success Criteria
+## Completion Criteria
 
 - All menu items functional
 - Permission-based visibility
@@ -193,7 +246,7 @@ Menu structure implementation
 ```markdown
 # Tasks: 2026-Q1
 
-> L3: LLM autonomous | Based on scopes/2026-Q1.md
+> L3: ADD executes autonomously | Based on scopes/2026-Q1.md
 
 ## Active
 
@@ -214,48 +267,19 @@ Menu structure implementation
 (none)
 ```
 
-### history/scopes/{scope}.md
-
-```markdown
-# Completed: 2025-Q4
-
-> Archived scope + tasks
-
-## Summary
-
-Settings UI implementation
-
-## Period
-
-2025-10-01 ~ 2025-12-31
-
-## Deliverables
-
-- Settings pages (Phase 9)
-- Permission management (Phase 4)
-
-## Tasks Completed
-
-| Task             | Date  |
-| ---------------- | ----- |
-| Settings config  | 12-15 |
-| Feature flags UI | 12-20 |
-| Country config   | 12-28 |
-
-## CDD Updated
-
-- .ai/apps/web-admin.md
-```
-
 ## Best Practices
 
-| Practice                 | Description                             |
-| ------------------------ | --------------------------------------- |
-| Roadmap = Planning only  | Do not load during work                 |
-| Scope = 1 person 1 scope | Separate scopes for concurrent work     |
-| Tasks = Focused          | Include only current scope tasks        |
-| History = Archive only   | Save after completion, skip during work |
-| Naming = Consistent      | Follow `{year}-{period}` format         |
+| Practice | Description |
+| -------- | ----------- |
+| Derive from CDD | Every scope must reference CDD constraints |
+| Classify change type | Always specify add/change/delete/migrate/improve |
+| Include impact analysis | Identify affected components and dependencies |
+| Define completion criteria | Specify when the scope is done |
+| Roadmap = Planning only | Do not load during execution |
+| Scope = Approval boundary | Human approves scope, ADD executes tasks |
+| Tasks = ADD input | Write tasks as executable instructions |
+| History = Archive only | Skip during active work |
+| CDD feedback | Update CDD only with confirmed stable knowledge |
 
 ## Future: DB Migration
 
@@ -270,8 +294,8 @@ Future:  DB MCP
 
 ## References
 
+- Identity anchor: `docs/llm/policies/identity.md`
 - Methodology: `docs/llm/policies/development-methodology.md`
 - CDD Policy: `docs/llm/policies/cdd.md`
 - ADD Policy: `docs/llm/policies/add.md`
 - Token Optimization: `docs/llm/policies/token-optimization.md`
-- Monorepo Structure: `docs/llm/policies/monorepo.md`

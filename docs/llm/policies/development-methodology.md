@@ -1,99 +1,149 @@
 # Development Methodology
 
-> Policy & Roadmap for LLM-Driven Development | **Last Updated**: 2026-01-22
+> CDD-Driven Autonomous Development for AI-Native Organizations | **Last Updated**: 2026-03-15
+
+## Identity
+
+> Fixed definitions: `identity.md`
+
+This methodology is designed for **AI-native organizations**.
+
+It is not a general-purpose development process. It is an automated software evolution system where AI executors perform implementation and humans intervene only for approval, exception handling, and final review.
+
+### Foundational Premises
+
+- LLM-enabled execution is assumed, not optional
+- CDD is the organization's system memory and reconstructable SSOT
+- SDD transforms requested changes into executable plans
+- ADD autonomously selects execution policy and performs implementation
+- Humans are approvers, exception judges, and final reviewers — not routine operators
+
+### Core Loop
+
+```
+CDD (System Memory) → SDD (Change Plan) → ADD (Auto-Execution) → CDD (Feedback)
+```
+
+### One-Line Definition
+
+This methodology is an automated development methodology designed for AI-native organizations — maintaining system knowledge through CDD, planning changes through SDD, auto-executing through ADD, with humans performing only approval and exception judgment.
 
 ## Core Philosophy
 
-### Primary Goal
+### 1. CDD-Centered Principle
 
-Consistently guarantee **highest-quality output** instead of producing low-quality deliverables in bulk.
+The center is CDD, not code. All planning and execution reference CDD. Code is a deliverable; the system's essence is defined in CDD.
 
-### Economic Principle
+### 2. Reconstruction-First Principle
 
-The most expensive resource is **expert labor**, not tools. Optimize for senior developer's time and creative immersion.
+CDD alone must enable rebuilding a system with identical functionality and system identity, even if all code is lost. For reconstruction criteria details, see `cdd.md#core-property-reconstructability`.
 
-### Execution Strategy
+### 3. Change Derivation Principle
 
-Senior developers direct **3-5 projects simultaneously** by delegating all non-creative work to LLM agents.
+Changes are not invented arbitrarily. They are interpreted against CDD, planned through SDD, and executed through ADD.
 
-| Delegate to LLM         | Reserve for Human        |
-| ----------------------- | ------------------------ |
-| Detailed planning       | Direction setting        |
-| Code implementation     | Architecture decisions   |
-| Documentation           | Code review              |
-| Routine problem-solving | Creative problem-solving |
+### 4. Auto-Execution Principle
 
-## Collaboration Model
+ADD classifies work types, selects appropriate policies and skills, and executes automatically. This is the primary execution path.
 
-### Human: The Architect
+### 5. Minimal Human Intervention Principle
 
-| Aspect           | Description                                 |
-| ---------------- | ------------------------------------------- |
-| Qualification    | Senior+ understanding 80%+ of project       |
-| Role             | Manage entire project lifecycle             |
-| Responsibilities | Planning, design, architecture, code review |
-| Authority        | Approve plans, guarantee quality            |
+Humans are approvers, exception judges, and final reviewers. They do not perform routine implementation or coordination.
 
-### LLM: The Implementer
+### 6. AI-First Execution Principle
 
-| Aspect     | Description                             |
-| ---------- | --------------------------------------- |
-| Role       | Resolve all unresolved internal details |
-| Scope      | Plan generation, code implementation    |
-| Autonomy   | Execute within approved boundaries      |
-| Escalation | Only on consensus failure               |
+The primary execution path is Layer 2 → ADD. Layer 3 exists for human understanding, review, and onboarding — not as an alternative execution path.
 
-## Three-Phase Architecture
+## System Architecture
 
 ```
-CDD (Context-Driven Development)     -> Rules, patterns, conventions
-    |
-    v
-SDD (Spec-Driven Development)        -> Tasks, roadmap, progress
-    |
-    v
-ADD (Agent-Driven Development)       -> Autonomous execution
-    |
-    v
-Update CDD -> Loop
+CDD (System Memory / Reconstructable SSOT)
+  │
+  │  defines constraints, domain model, contracts, invariants
+  │
+  v
+SDD (Change Planning Layer)
+  │
+  │  derives executable change plans: add / change / delete / migrate / improve
+  │
+  v
+ADD (Autonomous Execution Engine)
+  │
+  │  classifies work → selects policy → selects skill/toolchain → executes
+  │
+  v
+CDD Update (Feedback Loop)
+  │
+  │  newly confirmed knowledge feeds back into CDD
+  │
+  └──→ CDD
 ```
 
-| Phase | Status    | Details   |
-| ----- | --------- | --------- |
-| CDD   | Active    | `cdd.md`  |
-| SDD   | Active    | `sdd.md`  |
-| ADD   | Active    | `add.md`  |
+## Layer Roles
 
-## Summary: Policy vs Roadmap
+| Layer | Role | Core Property |
+| ----- | ---- | ------------- |
+| **CDD** | System SSOT and reconstruction baseline | Even without code, the system can be rebuilt |
+| **SDD** | CDD-derived change planning | Every plan traces back to CDD constraints |
+| **ADD** | Autonomous execution engine | Classifies work, selects policy/skill, executes within CDD constraints |
+| **Human** | Approver, exception judge, final reviewer | Intervenes only when automation cannot safely proceed |
 
-### Active Now
+## Human Role
 
-- Core Philosophy
-- Collaboration Model
-- CDD 4-Tier Structure
-- SDD Basic Process
-- ADD Basic Execution
-- Human Intervention Protocol
+Humans are the organization's **approvers, exception judges, and final reviewers**. For detailed escalation protocol and intervention rules, see `add.md#escalation-protocol`.
 
-### Future Roadmap
+| Human Does | Human Does NOT |
+| ---------- | -------------- |
+| Approve scope-level plans | Write implementation code |
+| Resolve ambiguity when escalated | Manage task-level progress |
+| Make decisions automation cannot | Coordinate execution details |
+| Review final output | Debug routine issues |
+| Approve system identity changes | Operate the system day-to-day |
+| Audit and onboard via Layer 3 | Execute through Layer 3 |
 
-| Component               | Phase       |
-| ----------------------- | ----------- |
-| SDD Learning Loop       | Medium-term |
-| ADD Multi-LLM Consensus | Medium-term |
-| ADD Distillation        | Long-term   |
-| Custom LLM Ecosystem    | Long-term   |
+### Human Intervention Triggers
+
+- System identity change
+- Unresolved CDD ambiguity
+- Policy conflict
+- Insufficient auto-judgment confidence
+- High-risk contract change
+- Exceptional approval situations
+
+## SSOT and No-Duplication Principle
+
+| Allowed | Forbidden |
+| ------- | --------- |
+| Summaries | Duplicating identical definitions across files |
+| Pointers / links | Silent drift between duplicated definitions |
+| Short restatements with references | Multiple canonical copies |
+
+## Feedback Loop
+
+```
+Execution Complete
+    │
+    ├── Constitutional knowledge changed? → CDD update (requires approval)
+    ├── New operational pattern confirmed? → CDD update (accumulate)
+    ├── Reference catalog changed? → CDD update (index refresh)
+    └── No new knowledge → Archive in SDD history only
+```
+
+## Active Components
+
+| Component | Policy | Status |
+| --------- | ------ | ------ |
+| Identity | `docs/llm/policies/identity.md` | Active |
+| CDD | `docs/llm/policies/cdd.md` | Active |
+| SDD | `docs/llm/policies/sdd.md` | Active |
+| ADD | `docs/llm/policies/add.md` | Active |
+| Token Optimization | `docs/llm/policies/token-optimization.md` | Active |
+| Monorepo Structure | `docs/llm/policies/monorepo.md` | Active |
 
 ## References
 
-| Policy  | File                                          | Status |
-| ------- | --------------------------------------------- | ------ |
-| CDD     | `docs/llm/policies/cdd.md`                    | Active |
-| SDD     | `docs/llm/policies/sdd.md`                    | Active |
-| ADD     | `docs/llm/policies/add.md`                    | Active |
-| TOKEN   | `docs/llm/policies/token-optimization.md`     | Active |
-| MONOREPO| `docs/llm/policies/monorepo.md`               | Active |
-
----
-
-_Full details: `development-methodology-details.md`_
+- Identity anchor: `docs/llm/policies/identity.md`
+- Full details: `development-methodology-details.md`
+- CDD Policy: `docs/llm/policies/cdd.md`
+- SDD Policy: `docs/llm/policies/sdd.md`
+- ADD Policy: `docs/llm/policies/add.md`
