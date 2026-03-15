@@ -12,10 +12,9 @@ ADD defines **how to execute** approved SDD tasks. It governs execution procedur
 
 ## CDD / SDD / ADD Separation
 
-| | CDD | SDD | ADD |
-|---|---|---|---|
-| Question | What is this system? | What do we build when? | **How do we execute?** |
-| Content | Identity, constraints | Plans, coordination | **Execution, verification, escalation** |
+See `development-methodology.md` → Three-Layer Architecture for the full separation table (SSOT).
+
+ADD's role: execution procedures, verification, escalation, CDD update procedures.
 
 ### What ADD Defines
 
@@ -159,6 +158,28 @@ Defined in `development-methodology.md` Governance → Scope Judgment Criteria (
 - domain-local: closes within one domain, no external consumers
 - cross-domain: affects contracts/entities referenced by other domains, or Shared Surfaces Registry items
 - global: auth model, deployment model, tech stack, or global invariant changes
+
+## Stop/Resume Protocol
+
+When execution must pause (deficiency, escalation, or blocked dependency):
+
+**Stop procedure:**
+1. Complete current atomic unit (function, file, or logical chunk) if safe to do so
+2. Update task status to `blocked` with reason in tasks/{scope}.md
+3. Persist work safely (commit, local checkpoint, or other method appropriate to context)
+4. Submit deficiency report or escalation proposal
+
+**Resume procedure:**
+1. Reload latest CDD Constitutional (may have changed during stop)
+2. Review approved changes and their impact on in-progress work
+3. Update task status from `blocked` to `active`
+4. Review affected code against updated CDD before continuing
+
+**Rules:**
+- Stop does not mean discard — all work-in-progress must be preserved
+- Resume requires confirming CDD Constitutional is current
+- If multiple tasks are active, only blocked tasks stop; unrelated tasks may continue
+- Executor-specific stop/resume guidance (e.g., LLM context recovery, human task switching) belongs in project-level operations guides, not in this protocol
 
 ## Execution Modes
 

@@ -10,11 +10,9 @@ SDD defines **what to build, when, and in what order**. It is the temporal plann
 
 ## CDD / SDD / ADD Separation
 
-| | CDD | SDD | ADD |
-|---|---|---|---|
-| Question | What is this system? | What do we build when? | How do we execute? |
-| Temporality | Permanent | **Temporal** (archived on completion) | Procedural |
-| Content | Identity, constraints | Plans, scopes, tasks, coordination | Execution rules |
+See `development-methodology.md` → Three-Layer Architecture for the full separation table (SSOT).
+
+SDD's role: temporal planning, scopes, tasks, shared resource coordination.
 
 ### What SDD Defines
 
@@ -173,12 +171,23 @@ claims:
 
 | Field | Required | Description |
 |---|---|---|
-| surface | Yes | Shared surface name (must match CDD registry) |
+| surface | Yes | Shared surface canonical name (must exactly match CDD Shared Surfaces Registry; aliases prohibited) |
 | owner | Yes | Executor or domain holding the claim |
 | scope | Yes | SDD scope the claim belongs to |
 | status | Yes | `claimed` → `active` → `released` or `expired` |
 | acquired | Yes | Date claim was acquired |
 | timeout | Yes | `scope-completion` or explicit date |
+
+**Ledger concurrency rules:**
+
+| Rule | Description |
+|---|---|
+| Read before write | Pull latest ledger before adding or modifying a claim |
+| Atomic update | Update ledger and push/sync immediately after change |
+| Conflict resolution | If push fails (concurrent edit), pull + merge; first-writer-wins for same surface |
+| Stale read detection | If claimed surface already has `active` status by another owner, claim is rejected |
+| Retry | On conflict, retry once after merge; if still conflicting, escalate to Domain Owner |
+| Notification | When a claim is acquired, notify other executors working in the same domain |
 
 **Claim lifecycle:**
 

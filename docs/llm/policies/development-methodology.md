@@ -89,11 +89,7 @@ Update CDD -> Loop
 
 ### Boundary Tests
 
-| # | Test | Yes → | No → |
-|---|------|-------|------|
-| 1 | Still valid after scope completes? | CDD | SDD |
-| 2 | Referenced by multiple scopes? | CDD | SDD |
-| 3 | Needed to rebuild system without code? | CDD | SDD or unnecessary |
+See `cdd.md` → Boundary Tests for the content classification tests (SSOT).
 
 ## Phase Lifecycle
 
@@ -111,11 +107,7 @@ Architect creates CDD Constitutional draft and domain partitioning:
 
 ### Phase 2: Planning (Architect + Executors)
 
-```
-Phase 2a: Each executor writes SDD draft (parallel, feature branches)
-Phase 2b: Each executor identifies CDD Constitutional gaps → proposes supplements
-Phase 2c: Architect integrates CDD proposals + resolves conflicts → Constitutional finalized
-```
+See `sdd.md` → Phase 2 Workflow for the full 2a/2b/2c process (SSOT).
 
 ### Phase 3: Execution (Executors, CDD Constitutional read-only)
 

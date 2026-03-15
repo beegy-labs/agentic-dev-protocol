@@ -10,12 +10,9 @@ CDD is a **System Reconstruction Constitution**. All code may be lost, but CDD a
 
 ## CDD / SDD / ADD Separation
 
-| | CDD | SDD | ADD |
-|---|---|---|---|
-| Question | What is this system? | What do we build when? | How do we execute? |
-| Temporality | Permanent (valid until changed) | Temporal (archived on completion) | Procedural (repeated per task) |
-| Location | `.ai/`, `docs/llm/` | `.specs/` | `AGENTS.md`, `.ai/workflows/` |
-| Content | Identity, constraints, knowledge | Plans, scopes, tasks, coordination | Execution rules, verification, escalation |
+See `development-methodology.md` → Three-Layer Architecture for the full separation table (SSOT).
+
+CDD's role: persistent system identity, constraints, accumulated knowledge.
 
 ### Boundary Tests
 
