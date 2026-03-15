@@ -198,6 +198,21 @@ Three audits run at milestone completion (or periodically, project decides frequ
 | Coverage | Are all required 3-axis categories filled or marked N/A? |
 | Operational creep | Has any Operational content become de facto binding without promotion? |
 
+### Audit Failure Actions
+
+Every audit failure must have a corrective action owner and due date.
+
+| Audit | Failure | Corrective Action |
+|---|---|---|
+| Boundary | Content in wrong layer | Move content to correct layer; owner = whoever wrote it; due = next work session |
+| Boundary | Governance redefined CDD/SDD/ADD content | Revert governance change; separate into correct layer; owner = Architect |
+| Parallel | Shared surface modified without claim | Retroactive claim + review; owner = executor who skipped claim; due = immediate |
+| Parallel | Migration queue violated | Reorder or re-apply migrations; owner = executor; escalate to Architect if conflict |
+| Parallel | Contract-first rule violated | Consumer pauses; provider publishes contract; due = within same work session |
+| Drift | CDD Constitutional does not match implementation | Either update CDD (if implementation is correct) or fix implementation (if CDD is correct); owner = Domain Owner; due = next milestone |
+| Drift | Operational creep detected | Evaluate for promotion (4 criteria) or demote to advisory; owner = Domain Owner |
+| Drift | 3-axis coverage gap | Fill missing category or mark N/A with reason; owner = Architect; due = next milestone |
+
 ### Change Notification Rules
 
 | Scope | Who to Notify | When |
@@ -206,7 +221,7 @@ Three audits run at milestone completion (or periodically, project decides frequ
 | cross-domain | Affected domain owners + executors | Before merge |
 | global | All executors + all domain owners | Before merge |
 
-### Post-Review SLA (Recommended)
+### Post-Review SLA and Fallback
 
 | Change Level | Recommended Response Time |
 |---|---|
@@ -215,6 +230,37 @@ Three audits run at milestone completion (or periodically, project decides frequ
 | `constitutional` cross-domain | Within 4 hours |
 | `constitutional` global | Within 1 business day |
 | `migration-required` | Within 1 business day |
+
+**Approval fallback (when SLA is exceeded):**
+
+| SLA breach | Fallback |
+|---|---|
+| Domain Owner unresponsive | Escalate to Architect |
+| Architect unresponsive (domain-local) | Domain Owner may grant temporary approval; Architect reviews post-hoc |
+| Architect unresponsive (cross-domain/global) | Work continues on non-blocked tasks; blocked tasks enter `waiting-approval` state |
+| Emergency change (system down / security) | Any Domain Owner may grant temporary approval with mandatory Architect review within 1 business day |
+
+**Temporary approval rules:**
+- Temporary approvals are valid for 1 business day
+- Must be explicitly confirmed or reverted by the original authority
+- Temporary approval must be logged with reason in the claim ledger or commit message
+
+### Phase Start Gates
+
+Each phase has minimum required artifacts before work can begin:
+
+| Phase | Start Gate (minimum artifacts) |
+|---|---|
+| Phase 1 (Foundation) | Architect available; project repository initialized |
+| Phase 2 (Planning) | CDD Constitutional draft with: domain model + system topology + invariants + shared surfaces registered |
+| Phase 3 (Execution) | Approved SDD scope + tasks; CDD Constitutional basis confirmed for all scope items; shared resource claims acquired if needed |
+| Phase 4 (Capitalization) | All scope tasks completed or explicitly deferred; task-level verification passed |
+
+**Gate check responsibility:**
+- Phase 1 → 2: Architect self-checks
+- Phase 2 → 3: Architect verifies CDD completeness + SDD approval
+- Phase 3 → 4: Executor verifies task completion; Architect verifies scope acceptance
+- Gate failure: identify missing artifact, complete it, re-check
 
 ## Summary: Policy vs Roadmap
 

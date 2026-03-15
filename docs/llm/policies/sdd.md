@@ -150,15 +150,58 @@ Shared surfaces are defined in CDD Constitutional. SDD manages **how** they are 
 - Owner domain may modify freely; consumer domains must claim
 - Ownership transfer requires Architect approval (constitutional change)
 
+**Claim Ledger:**
+
+All claims are tracked in a single ledger file: `.specs/claims.yml`
+
+```yaml
+# .specs/claims.yml
+claims:
+  - surface: 'users table schema'
+    owner: executor-a
+    scope: 2026-Q1
+    status: active        # claimed | active | released | expired
+    acquired: 2026-01-15
+    timeout: scope-completion
+  - surface: '@org/auth-utils interface'
+    owner: executor-b
+    scope: 2026-Q2
+    status: claimed
+    acquired: 2026-02-01
+    timeout: 2026-02-15   # explicit deadline
+```
+
+| Field | Required | Description |
+|---|---|---|
+| surface | Yes | Shared surface name (must match CDD registry) |
+| owner | Yes | Executor or domain holding the claim |
+| scope | Yes | SDD scope the claim belongs to |
+| status | Yes | `claimed` → `active` → `released` or `expired` |
+| acquired | Yes | Date claim was acquired |
+| timeout | Yes | `scope-completion` or explicit date |
+
 **Claim lifecycle:**
 
 | Phase | Rule |
 |---|---|
-| Acquire | Declare claim in SDD task before starting work |
-| Timeout | Claims expire when the owning task completes or is abandoned |
-| Release | Explicit release in task completion or scope archive |
+| Acquire | Declare in `.specs/claims.yml` before starting work |
+| Activate | Set to `active` when work begins on the surface |
+| Release | Set to `released` on task completion or scope archive |
+| Timeout | Claims expire when timeout date passes or scope completes |
 | Conflict | First claim wins; second claim must wait or escalate |
 | Escalation | Domain Owner resolves within-domain; Architect resolves cross-domain |
+
+**Timeout and takeover rules:**
+
+| Situation | Rule |
+|---|---|
+| Task completed | Claim auto-released |
+| Scope archived | All scope claims auto-released |
+| Explicit timeout passed | Claim status → `expired` |
+| Owner unresponsive (no progress for 2+ working days) | Claim considered abandoned |
+| Abandoned claim | Any executor may request takeover via Domain Owner |
+| Takeover procedure | Domain Owner approves → new owner updates ledger → notify original owner |
+| Domain Owner unresponsive | Escalate to Architect for takeover approval |
 
 **Migration queue rules (Shared Schema):**
 - Each migration gets a monotonic sequence number
@@ -171,6 +214,12 @@ Shared surfaces are defined in CDD Constitutional. SDD manages **how** they are 
 - Consumer may begin work once contract is committed to branch
 - Contract changes after consumer starts require cross-domain escalation
 - Contract must include: endpoint, input/output shape, error format
+
+**Integration rules (Shared Surface merge):**
+- Shared surface changes require passing checks before merge: tests, lint, build, schema validation
+- Executor must verify no other active claims conflict before merge
+- If conflicting active claims exist, coordinate with claim owners before merge
+- Migration merges are sequential: only one migration merges at a time
 
 **Cross-scope dependency blocking:**
 - `sequential` strategy: consumer scope is blocked until dependency scope completes
