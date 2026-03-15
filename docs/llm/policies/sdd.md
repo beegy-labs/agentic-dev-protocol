@@ -203,6 +203,16 @@ claims:
 | Takeover procedure | Domain Owner approves → new owner updates ledger → notify original owner |
 | Domain Owner unresponsive | Escalate to Architect for takeover approval |
 
+**Ledger maintenance rules:**
+
+| Rule | Description |
+|---|---|
+| Surface naming | Use exact name from CDD Shared Surfaces Registry; aliases prohibited |
+| Expired cleanup | Domain Owner reviews and cleans expired claims at scope completion |
+| Release omission | If executor fails to release, Domain Owner sets to `released` with note |
+| Ledger SSOT | `.specs/claims.yml` is the single source of truth for all claim state |
+| Approval records | All temporary approvals are recorded in the claim ledger (not in commit messages) |
+
 **Migration queue rules (Shared Schema):**
 - Each migration gets a monotonic sequence number
 - Only one executor writes to migration queue at a time

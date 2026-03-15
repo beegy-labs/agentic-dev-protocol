@@ -44,6 +44,8 @@ When unsure where content belongs, apply in order:
 | Error retry count changed from 3 to 5 | Depends | Constitutional if SLA/invariant defines it; IMPL_DETAIL otherwise | Check if Failure Handling invariant specifies retry policy |
 | Logging format changed | Depends | Constitutional if Observability invariant defines format; Operational otherwise | Check if format is in Constitutional invariants |
 
+Additional boundary cases are accumulated in `docs/llm/policies/boundary-cases.md` as they arise during operation.
+
 ## CDD Internal Structure
 
 CDD content is classified into three tiers with distinct authority levels:
@@ -83,7 +85,7 @@ Derived, cumulative artifacts. **Non-normative.**
 - Reference absence alone cannot block scope creation
 - Updated automatically as scopes complete
 
-## Required Content Categories (3-Axis Template)
+## Required Content Categories (4-Axis Template)
 
 The protocol defines categories. Each project fills in the content. Review all categories during project initialization. Mark non-applicable items as N/A with reason.
 
@@ -154,6 +156,16 @@ Rules:
 | Feature Registry | Cumulative list of implemented features | Scope completion |
 | API Catalog | Full list of implemented endpoints | Scope completion |
 | Screen/Page Map | Implemented screens and navigation | Scope completion |
+
+**Reference update responsibility:**
+
+| Aspect | Rule |
+|---|---|
+| Trigger | Scope close (when SDD scope moves to history) |
+| Responsibility | Executor who completed the scope |
+| Review | Domain Owner verifies completeness |
+| Failure | If executor omits update, Domain Owner fills gap before scope archive is finalized |
+| Method | Manual update by executor (automated scripts may assist but executor is accountable) |
 
 ## Constitutional Mechanisms
 

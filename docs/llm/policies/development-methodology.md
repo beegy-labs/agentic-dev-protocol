@@ -168,7 +168,14 @@ Phase 2c: Architect integrates CDD proposals + resolves conflicts → Constituti
 
 ### Periodic Audits
 
-Three audits run at milestone completion (or periodically, project decides frequency). Keep lightweight — flag issues, do not rewrite.
+Three audits run periodically. Keep lightweight — flag issues, do not rewrite.
+
+| Aspect | Rule |
+|---|---|
+| Minimum cadence | Once per milestone or once per month (whichever comes first) |
+| Trigger | Architect or Domain Owner initiates |
+| Output | Audit checklist with pass/fail per item + corrective action items if any |
+| Storage | `.specs/audits/{date}-{type}.md` |
 
 **Boundary Audit** — Did recent changes land in the correct layer?
 
@@ -195,7 +202,7 @@ Three audits run at milestone completion (or periodically, project decides frequ
 | Machine reconstruction | Can a new executor reconstruct core system from Tier 2 alone? |
 | Human reconstruction | Can a developer onboard + implement from Tier 3 alone? |
 | Constitutional accuracy | Does CDD Constitutional still match the actual implemented system? |
-| Coverage | Are all required 3-axis categories filled or marked N/A? |
+| Coverage | Are all required 4-axis categories filled or marked N/A? |
 | Operational creep | Has any Operational content become de facto binding without promotion? |
 
 ### Audit Failure Actions
@@ -211,7 +218,7 @@ Every audit failure must have a corrective action owner and due date.
 | Parallel | Contract-first rule violated | Consumer pauses; provider publishes contract; due = within same work session |
 | Drift | CDD Constitutional does not match implementation | Either update CDD (if implementation is correct) or fix implementation (if CDD is correct); owner = Domain Owner; due = next milestone |
 | Drift | Operational creep detected | Evaluate for promotion (4 criteria) or demote to advisory; owner = Domain Owner |
-| Drift | 3-axis coverage gap | Fill missing category or mark N/A with reason; owner = Architect; due = next milestone |
+| Drift | 4-axis coverage gap | Fill missing category or mark N/A with reason; owner = Architect; due = next milestone |
 
 ### Change Notification Rules
 

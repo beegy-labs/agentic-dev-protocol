@@ -155,13 +155,10 @@ When CDD Constitutional change is needed during ADD:
 
 ### Scope Judgment Criteria
 
-| Condition | Scope |
-|---|---|
-| Closes within one domain, no external consumers | `domain-local` |
-| Affects contracts/entities referenced by other domains | `cross-domain` |
-| Changes to Shared Surfaces Registry items | `cross-domain` (minimum) |
-| Auth model, deployment model, tech stack changes | `global` |
-| Global invariant changes | `global` |
+Defined in `development-methodology.md` Governance → Scope Judgment Criteria (SSOT). Summary:
+- domain-local: closes within one domain, no external consumers
+- cross-domain: affects contracts/entities referenced by other domains, or Shared Surfaces Registry items
+- global: auth model, deployment model, tech stack, or global invariant changes
 
 ## Execution Modes
 
