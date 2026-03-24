@@ -83,6 +83,17 @@ docs/llm/
 - Translated from Tier 3
 - Same structure as `docs/en/`
 
+## Reconstructability Sufficiency Test
+
+How do you know if your CDD is complete enough to reconstruct the system?
+
+| Result | Condition |
+|--------|-----------|
+| Sufficient | All features can be reconstructed from CDD alone, without reading code |
+| Insufficient | Understanding any feature's behavior requires reading the code |
+
+The minimum required scope maps to the **Constitutional classification** items: external contracts, auth/authz boundaries, core invariants, domain model, system boundaries, and failure handling semantics. If all of these are covered, your CDD passes the sufficiency test.
+
 ## How Agents Use This
 
 ### Loading Strategy

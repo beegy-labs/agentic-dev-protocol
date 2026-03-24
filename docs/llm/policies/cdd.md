@@ -60,6 +60,15 @@ If all code is lost, CDD alone must allow reconstruction of an **equivalent syst
 | Core invariants | Non-critical optimizations |
 | Failure handling semantics | |
 
+### Sufficiency Test
+
+| Result | Condition |
+| ------ | --------- |
+| Sufficient | All features reconstructable from CDD without reading code |
+| Insufficient | Any feature requires reading code to understand behavior |
+
+Coverage lens: Constitutional classification items = minimum required scope.
+
 ### Lifecycle Role
 
 CDD is not a one-time design document. It must remain usable for:
