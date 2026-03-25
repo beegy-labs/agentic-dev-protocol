@@ -1,6 +1,6 @@
 # ADD (Agent-Driven Development)
 
-> Autonomous execution and policy selection engine for AI-native organizations | Last Updated: 2026-03-15
+> Autonomous execution and policy selection engine for AI-native organizations | Last Updated: 2026-03-25
 
 ## Definition
 
@@ -154,15 +154,82 @@ ADD selects the appropriate skill/workflow based on the work's technical domain.
 ## Entry Points
 
 ```
-AGENTS.md → CLAUDE.md / GEMINI.md → .ai/workflows/
-(router)    (executor config)       (workflow details)
+AGENTS.md → executor config (CLAUDE.md / GEMINI.md) → .add/
+(router)    (executor-specific)                        (workflow details)
 ```
 
 | File | Purpose |
 | ---- | ------- |
-| AGENTS.md | Shared router (<50 lines) |
-| CLAUDE.md | Claude-specific config |
-| GEMINI.md | Gemini-specific config |
+| `AGENTS.md` | Shared router — executor-agnostic, <50 lines |
+| `CLAUDE.md` / `GEMINI.md` | Executor-specific config |
+| `.add/` | Project workflow directory — see convention below |
+
+## .add/ Directory Convention
+
+Every project using ADD maintains a `.add/` directory as the **workflow execution layer**. This directory is the concrete implementation of ADD for that project.
+
+### File Types
+
+| Type | Role | Examples |
+| ---- | ---- | -------- |
+| Workflow | Executable steps for a specific trigger | `implementation.md`, `bug-fix.md`, `code-review.md` |
+| Reference | Read before execution — cross-cutting rules | `best-practices.md`, `performance.md`, `skills.md` |
+| Index | Navigation entry point — which file to use | `README.md` |
+| Redirect | Points to canonical workflow, no duplicate content | `feature-addition.md → implementation.md` |
+
+### Required Files
+
+| File | Type | Purpose |
+| ---- | ---- | ------- |
+| `README.md` | Index | Trigger → workflow selection table; reference doc map; SSOT ownership map |
+| `best-practices.md` | Reference | Cross-cutting project rules read before all execution |
+| `skills.md` | Reference | Project skill registry — stacks, crates, file ownership per domain |
+| `escalation.md` | Workflow | When and how to escalate to humans |
+
+### SSOT Principles
+
+| Principle | Rule |
+| --------- | ---- |
+| One fact, one file | Each rule or pattern lives in exactly one `.add/` or CDD file — never duplicated |
+| Workflow deduplication | If two workflows share the same steps, one becomes a redirect to the other |
+| Reference over copy | Workflow files reference CDD docs for patterns; they do not copy CDD content inline |
+| Ownership declared | `README.md` declares which file owns which content domain |
+
+### Workflow File Structure
+
+Each workflow file follows this standard layout:
+
+```markdown
+# <Workflow Name>
+
+> ADD Execution | Last Updated: YYYY-MM-DD
+
+## Trigger
+<one-line condition that activates this workflow>
+
+## Read Before Execution
+<table: doc | path | when>
+
+## Execution
+<table: step | action>
+
+## Rules
+<table: rule | detail>
+```
+
+### Deduplication Pattern
+
+When a work type maps naturally to an existing workflow, create a redirect instead of a duplicate:
+
+```markdown
+# Feature Addition
+
+> ADD — Redirect | Last Updated: YYYY-MM-DD
+
+Use `implementation.md`. Feature addition and implementation share the same workflow.
+
+Key difference: if no spec exists, create `.specs/{app}/scopes/{scope}.md` before Step 1.
+```
 
 ## Spec-First Validation
 
